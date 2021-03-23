@@ -45,9 +45,11 @@ public class Human{
     //Moves The Human
     public void Move(){
         boolean newLoc = false;
+        //Used To Stop The Movement If It Tries To Move To Many Times (Stops Crashes)
+        int loopCount = 0;
 
         //Generates A New Random Location For A Human To Move To
-        while (newLoc == false) {
+        while (newLoc == false && loopCount <= 16) {
             int orientation = int(random(4));
             int distance = int(random(4));
 
@@ -80,6 +82,8 @@ public class Human{
 
                 newLoc = true;
             }
+
+            loopCount++;
         }
     }
 

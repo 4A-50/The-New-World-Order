@@ -1,3 +1,29 @@
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import oscP5.*; 
+import netP5.*; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+public class TheNewWorldOrder_Sim extends PApplet {
+
+
+
+
+//OSC Info To Send Data To Art Sketch
+OscP5 oscP5;
+NetAddress myRemoteLocation;
+
 //Time Between Ticks In Seconds
 float tickTime = 1f;
 
@@ -5,14 +31,14 @@ float tickTime = 1f;
 int tickCount = 0;
 
 //Ground Colours
-color sand = color(255, 221, 138); //Sand
-color grass = color(152, 255, 138); //Grass
-color water = color(91, 208, 242); //Water
-color cliff = color(181, 183, 181); //Cliff
+int sand = color(255, 221, 138); //Sand
+int grass = color(152, 255, 138); //Grass
+int water = color(91, 208, 242); //Water
+int cliff = color(181, 183, 181); //Cliff
 
 //Tribe Colours
-color purple = color(136, 3, 252); //Purple
-color red = color(255, 0, 0); //Red
+int purple = color(136, 3, 252); //Purple
+int red = color(255, 0, 0); //Red
 
 //Image Width & Height
 int imgWidth = 512;
@@ -42,11 +68,16 @@ int minMateTime = 2;
 //Mutation Chance
 int mutationChance = 10;
 
-void setup(){
-    size(512, 512);
+public void setup(){
+    
 
     background(255, 255, 255);
     noStroke();
+
+    //Starts oscP5, Listening For Incoming Messages At Port 12000
+    oscP5 = new OscP5(this,12000);
+    //IP Address Of Reciver And Port
+    myRemoteLocation = new NetAddress("127.0.0.1",12000);
 
     //Loads The Background Image File In Then Loads All Of It's Pixels
     outline = loadImage("outline.png");
@@ -59,7 +90,7 @@ void setup(){
     //Loops Through Every Pixel And Checks If It Is A Valid Pixel From It's Colour
     for (int y = 0; y < imgWidth; y++) {
         for (int x = 0; x < imgHeight; x++) {
-            color currentPixel = outline.pixels[x + y * width];
+            int currentPixel = outline.pixels[x + y * width];
 
             if (currentPixel == sand || currentPixel == grass){
                 validPixels[x][y] = true;
@@ -74,7 +105,7 @@ void setup(){
     //Loops Through Every Pixel And Checks If It Is A Spawn Point
     for (int y = 0; y < imgWidth; y++) {
         for (int x = 0; x < imgHeight; x++) {
-            color currentPixel = spawns.pixels[x + y * width];
+            int currentPixel = spawns.pixels[x + y * width];
 
             //If The Pixel Is Purple Spawn A Purple Tribesman
             if (currentPixel == purple){
@@ -89,7 +120,7 @@ void setup(){
     }
 }
 
-void draw(){
+public void draw(){
     //Draws The Background Image Onto Screen
     image(outline, 0, 0);
 
@@ -121,7 +152,7 @@ void draw(){
             }
 
             //Checks It's Neighbouring Pixels For Water
-            SearchForWater(currentHuman);
+            DrinkWater(currentHuman);
 
             //Moves Them In A Random Direction
             currentHuman.Move();
@@ -138,14 +169,19 @@ void draw(){
         rect(humans.get(i).currentPos.x, humans.get(i).currentPos.y, 2, 2);
     }
 
+    //Sends The Simulation Data To The Art Sketch Via OSC
+    OscMessage myMessage = new OscMessage("/test");
+    myMessage.add(humans.size());
+    oscP5.send(myMessage, myRemoteLocation);
+
     tickCount++; // Updates The Tick Counter
 
     //Pause The Simulation For The Tick Time
-    delay(int(tickTime * 1000)); //Converts From Seconds To Millis For The Func
+    delay(PApplet.parseInt(tickTime * 1000)); //Converts From Seconds To Millis For The Func
 }
 
 //Searches The Neighbouring Pixels For A Water One To Drink From
-void SearchForWater(Human currentHuman){
+public void DrinkWater(Human currentHuman){
     for (int y = currentHuman.currentPos.y - 1; y <= currentHuman.currentPos.y + 2; y++) {
         for (int x = currentHuman.currentPos.x - 1; x <= currentHuman.currentPos.x + 2; x++) {
             if(waterPixels[x][y] == true){
@@ -157,7 +193,7 @@ void SearchForWater(Human currentHuman){
 }
 
 //Creates A New Child Based Of The Mum & Dad
-void Mate(Human dad, Human mum){
+public void Mate(Human dad, Human mum){
     //The Child Object
     Human child = new Human(allHumans += 1, dad.currentPos, dad.tribeColour, tickCount / 4, dad.maxThirst, mum.maxThirst);
 
@@ -169,7 +205,7 @@ void Mate(Human dad, Human mum){
 }
 
 //Checks Through All Humans To See If Ones Within 3 Pixels To Mate With
-int CheckForMates(int x, int y, int currentHumanID){
+public int CheckForMates(int x, int y, int currentHumanID){
     //Mate Count Started At -1 To Be Used If No Mates;
     int mateCount = -1;
 
@@ -213,4 +249,125 @@ public boolean CheckValidPos(int xPos, int yPos){
     }else{
         return false;
     }
+}
+public class Coords{
+    public int x;
+    public int y;
+
+    public Coords (int xCoord, int yCoord) {
+        x = xCoord;
+        y = yCoord;
+    }
+}
+public class Human{
+    //Objects ID
+    int id;
+
+    //Objects Start Position As A Coord Class
+    Coords startPos;
+
+    //The Objects Current Position
+    Coords currentPos;
+
+    //The Colour Of Its Tribe
+    int  tribeColour;
+
+    //Date Of Birth
+    int dateOfBirth;
+
+    //Water Value
+    int currentThirst;
+
+    //Max Water
+    int maxThirst;
+
+    //Pregnancy Date
+    int lastPregnancy = 0;
+
+    public Human (int _id, Coords _startPos, int tColour, int dob, int dadMaxThirst, int mumMaxThirst) {
+        id = _id;
+        startPos = _startPos;
+        currentPos = _startPos;
+        tribeColour = tColour;
+        dateOfBirth = dob;
+
+        //Randomly Picks One Of The Parents Max Thirsts
+        maxThirst = PApplet.parseInt(random(2)) == 1? dadMaxThirst : mumMaxThirst;
+
+        //Has A Chance To Mutate Max Thirst
+        if (PApplet.parseInt(random(101)) <= mutationChance) {
+            maxThirst += PApplet.parseInt(random(-1, 2));
+        }
+
+        //Sets The Current Thirst To Max First
+        currentThirst = maxThirst;
+    }
+
+    //Moves The Human
+    public void Move(){
+        boolean newLoc = false;
+        //Used To Stop The Movement If It Tries To Move To Many Times (Stops Crashes)
+        int loopCount = 0;
+
+        //Generates A New Random Location For A Human To Move To
+        while (newLoc == false && loopCount <= 16) {
+            int orientation = PApplet.parseInt(random(4));
+            int distance = PApplet.parseInt(random(4));
+
+            int newX = 0;
+            int newY = 0;
+
+            //North
+            if (orientation == 0) {
+                newX = currentPos.x;
+                newY = currentPos.y - distance;
+            }
+            //East
+            if (orientation == 1) {
+                newX = currentPos.x + distance;
+                newY = currentPos.y;
+            }
+            //South
+            if (orientation == 2) {
+                newX = currentPos.x;
+                newY = currentPos.y + distance;
+            }
+            //West
+            if (orientation == 3) {
+                newX = currentPos.x - distance;
+                newY = currentPos.y;
+            }
+
+            if(CheckValidPos(newX, newY) == true){
+                currentPos = new Coords(newX, newY);
+
+                newLoc = true;
+            }
+
+            loopCount++;
+        }
+    }
+
+    //Happens Once A Tick
+    public void Tick(){
+        currentThirst--;
+    }
+
+    public void GiveBirth(int currentDay){
+        lastPregnancy = currentDay;
+    }
+
+    public void Drink(){
+        currentThirst = maxThirst;
+    }
+}
+  public void settings() {  size(512, 512); }
+  static public void main(String[] passedArgs) {
+    String[] appletArgs = new String[] { "TheNewWorldOrder_Sim" };
+    if (passedArgs != null) {
+      PApplet.main(concat(appletArgs, passedArgs));
+    } else {
+      PApplet.main(appletArgs);
+    }
+  }
 }
