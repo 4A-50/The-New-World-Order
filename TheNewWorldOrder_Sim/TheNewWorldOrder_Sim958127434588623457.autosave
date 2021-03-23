@@ -1,0 +1,90 @@
+//Time Between Ticks In Seconds
+float tickTime = 0.25f;
+
+//The Current Tick Count
+int tickCount = 0;
+
+//Image Width & Height
+int imgWidth = 512;
+int imgHeight = 512;
+
+//Outline Images
+PImage outline;
+
+//Valid Pixel List
+int[][] validPixels = new int[imgWidth][imgHeight];
+
+//Human Positions
+ArrayList<Coords> humanPos = new ArrayList<Coords>();
+
+void setup(){
+    size(512, 512);
+
+    background(255, 255, 255);
+
+    outline = loadImage("outline.png");
+    outline.loadPixels();
+
+    for (int x = 0; x < imgWidth; ++x) {
+        for (int y = 0; y < imgHeight; ++y) {
+            if (outline.get(x,y) == color(225, 221, 138)){ //|| outline.get(x,y) == color(125, 255, 138)) {
+                validPixels[x][y] = 1;
+            }
+        }
+    }
+}
+
+void draw(){
+    background(255, 255, 255); //Resets The Background To White
+    image(outline, 0, 0);
+
+    //Prints The Tick Count On Screen
+    fill(0);
+    text("Tick: " + tickCount, 5, 15);
+    
+    boolean newLoc = false;
+
+    //Generates A New Random Location For A Human To Spawn
+    while (newLoc == false) {
+        int newX = int(random(512));
+        int newY = int(random(512));
+
+        if(checkValidPos(newX, newY) == true){
+            newLoc = true;
+
+            humanPos.add(new Coords(newX, newY)); //Adds The New Human To The List
+        }
+    }
+
+    //Draws The Humans Onto The Screen
+    for (int i = 0; i < humanPos.size(); i++) {
+        rect(humanPos.get(i).x, humanPos.get(i).y, 1, 1);
+    }
+
+    tickCount++; // Updates The Tick Counter
+
+    //Pause The Simulation For The Tick Time
+    delay(int(tickTime * 1000)); //Converts From Seconds To Millis For The Func
+}
+
+boolean checkValidPos(int xPos, int yPos){
+    int checkCount = 0;
+
+    //Checks No Other Humans Have The Same Space
+    for (int i = 0; i < humanPos.size(); i++) {
+        if(humanPos.get(i).x == xPos && humanPos.get(i).y == yPos){
+            checkCount++;
+        }
+    }
+
+    //Checks If It's A Valid Spawn Pixel
+    if(validPixels[xPos][yPos] == 0){
+        checkCount++;
+    }
+
+    if (checkCount == 0) {
+        return true;
+    }else{
+        return false;
+    }
+}
