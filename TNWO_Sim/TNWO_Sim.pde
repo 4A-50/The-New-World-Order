@@ -151,9 +151,7 @@ void draw(){
     }
 
     //Sends The Simulation Data To The Art Sketch Via OSC
-    OscMessage myMessage = new OscMessage("/test");
-    myMessage.add(humans.size());
-    oscP5.send(myMessage, myRemoteLocation);
+    SendOSCMessage();
 
     tickCount++; // Updates The Tick Counter
 
@@ -230,4 +228,30 @@ public boolean CheckValidPos(int xPos, int yPos){
     }else{
         return false;
     }
+}
+
+//Sends The Humans Array To The Art Sketch
+void SendOSCMessage(){
+    //The Number Of Purple Humans
+    int purpleHumans = 0;
+
+    //Number Of Red Humans
+    int redHumans = 0;
+
+    //Gets The Colour Of Each Human
+    for (int i = 0; i < humans.size(); ++i) {
+        if (humans.get(i).tribeColour == purple) {
+            purpleHumans++;
+        }
+        else{
+            redHumans++;
+        }
+    }
+
+    OscMessage myMessage = new OscMessage("/test");
+    myMessage.add(purpleHumans);
+    myMessage.add(redHumans);
+
+    //Sends The Message
+    oscP5.send(myMessage, myRemoteLocation);
 }

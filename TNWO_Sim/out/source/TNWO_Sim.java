@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.io.OutputStream; 
 import java.io.IOException; 
 
-public class TheNewWorldOrder_Sim extends PApplet {
+public class TNWO_Sim extends PApplet {
 
 
 
@@ -170,9 +170,7 @@ public void draw(){
     }
 
     //Sends The Simulation Data To The Art Sketch Via OSC
-    OscMessage myMessage = new OscMessage("/test");
-    myMessage.add(humans.size());
-    oscP5.send(myMessage, myRemoteLocation);
+    SendOSCMessage();
 
     tickCount++; // Updates The Tick Counter
 
@@ -249,6 +247,32 @@ public boolean CheckValidPos(int xPos, int yPos){
     }else{
         return false;
     }
+}
+
+//Sends The Humans Array To The Art Sketch
+public void SendOSCMessage(){
+    //The Number Of Purple Humans
+    int purpleHumans = 0;
+
+    //Number Of Red Humans
+    int redHumans = 0;
+
+    //Gets The Colour Of Each Human
+    for (int i = 0; i < humans.size(); ++i) {
+        if (humans.get(i).tribeColour == purple) {
+            purpleHumans++;
+        }
+        else{
+            redHumans++;
+        }
+    }
+
+    OscMessage myMessage = new OscMessage("/test");
+    myMessage.add(purpleHumans);
+    myMessage.add(redHumans);
+
+    //Sends The Message
+    oscP5.send(myMessage, myRemoteLocation);
 }
 public class Coords{
     public int x;
@@ -363,7 +387,7 @@ public class Human{
 }
   public void settings() {  size(512, 512); }
   static public void main(String[] passedArgs) {
-    String[] appletArgs = new String[] { "TheNewWorldOrder_Sim" };
+    String[] appletArgs = new String[] { "TNWO_Sim" };
     if (passedArgs != null) {
       PApplet.main(concat(appletArgs, passedArgs));
     } else {
