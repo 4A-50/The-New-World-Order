@@ -30,6 +30,9 @@ PImage spawns;
 //Humans
 ArrayList<Human> humans = new ArrayList<Human>();
 
+//Min Time Between Mates
+int minMateTime = 2;
+
 void setup(){
     size(512, 512);
 
@@ -94,10 +97,15 @@ void draw(){
 
         //Checks If The Human Is Dehydrated Or Not
         if(currentHuman.currentThirst != 0){
-            int mateCheck = CheckForMates(currentHuman.currentPos.x, currentHuman.currentPos.y);
+            //Checks If The Human Is Old Enough To Mate & Hasn't Mated In The Last 2 Days
+            if(currentHuman.dateOfBirth <= tickCount / 4 - minMateTime && currentHuman.lastPregnancy <= tickCount / 4 - minMateTime){
+                //Gets The Nearest Mate That Isn't It's Self
+                int mateCheck = CheckForMates(currentHuman.currentPos.x, currentHuman.currentPos.y, currentHuman.id);
 
-            if (mateCheck != -1 && currentHuman.dateOfBirth <= tickCount / 4 - 2) {
-                Mate(currentHuman, humans.get(mateCheck));
+                //If There Is A Possible Mate Then Mate
+                if (mateCheck != -1) {
+                    Mate(currentHuman, humans.get(mateCheck));
+                }
             }
 
             //Moves Them In A Random Direction
@@ -121,22 +129,40 @@ void draw(){
     delay(int(tickTime * 1000)); //Converts From Seconds To Millis For The Func
 }
 
+//Creates A New Child Based Of The Mum & Dad
 void Mate(Human dad, Human mum){
-    //humans.add(new Human(humans.size() + 1, dad.currentPos, dad.tribeColour, dad.maxThirst, mum.maxThirst));
-    println("Time To Make A Baby With: " + dad.id + " & " + mum.id);
+    //The Child Object
+    Human child = new Human(humans.size() + 1, dad.currentPos, dad.tribeColour, tickCount / 4, dad.maxThirst, mum.maxThirst);
+
+    dad.GiveBirth(tickCount / 4);
+    mum.GiveBirth(tickCount / 4);
+
+    //Adds The Child To The List Of Humans
+    humans.add(child);
 }
 
 //Checks Through All Humans To See If Ones Within 3 Pixels To Mate With
-int CheckForMates(int x, int y){
+int CheckForMates(int x, int y, int currentHumanID){
+    //Mate Count Started At -1 To Be Used If No Mates;
     int mateCount = -1;
 
+    //Loops Through All The Humans
     for (int i = 0; i < humans.size(); i++) {
-        if (dist(x,y, humans.get(i).currentPos.x, humans.get(i).currentPos.y) <= 3) {
-            mateCount = i;
-            break;
+        Human currentHuman = humans.get(i);
+
+        //Checks The Current Human Isn't It's Self
+        if(currentHuman.id != currentHumanID){
+            //Sees How Far Way The Current Human Is
+            if (dist(x,y, currentHuman.currentPos.x, currentHuman.currentPos.y) <= 2) {
+                //If The Human Is Old Enough To Mate Sent Their ID Out
+                if(currentHuman.dateOfBirth <= tickCount / 4 - minMateTime && currentHuman.lastPregnancy <= tickCount / 4 - minMateTime){
+                    return i;
+                }
+            }
         }
     }
 
+    //If No Mate Is Found Return -1
     return mateCount;
 }
 

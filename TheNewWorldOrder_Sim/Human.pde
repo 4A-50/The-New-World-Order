@@ -6,19 +6,22 @@ public class Human{
     Coords startPos;
 
     //The Objects Current Position
-    public Coords currentPos;
+    Coords currentPos;
 
     //The Colour Of Its Tribe
-    public color  tribeColour;
+    color  tribeColour;
 
     //Date Of Birth
     int dateOfBirth;
 
     //Water Value
-    public int currentThirst;
+    int currentThirst;
 
     //Max Water
-    public int maxThirst;
+    int maxThirst;
+
+    //Pregnancy Date
+    int lastPregnancy = 0;
 
     public Human (int _id, Coords _startPos, color tColour, int dob, int dadMaxThirst, int mumMaxThirst) {
         id = _id;
@@ -76,5 +79,9 @@ public class Human{
     //Happens Once A Tick
     public void Tick(){
         currentThirst--;
+    }
+
+    public void GiveBirth(int currentDay){
+        lastPregnancy = currentDay;
     }
 }
