@@ -32,6 +32,13 @@ public class Human{
 
         //Randomly Picks One Of The Parents Max Thirsts
         maxThirst = int(random(2)) == 1? dadMaxThirst : mumMaxThirst;
+
+        //Has A Chance To Mutate Max Thirst
+        if (int(random(101)) <= mutationChance) {
+            maxThirst += int(random(-1, 2));
+        }
+
+        //Sets The Current Thirst To Max First
         currentThirst = maxThirst;
     }
 
@@ -83,5 +90,9 @@ public class Human{
 
     public void GiveBirth(int currentDay){
         lastPregnancy = currentDay;
+    }
+
+    public void Drink(){
+        currentThirst = maxThirst;
     }
 }

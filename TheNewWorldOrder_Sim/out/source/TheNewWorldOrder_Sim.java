@@ -40,21 +40,29 @@ PImage outline;
 //Valid Pixel List
 boolean[][] validPixels = new boolean[imgWidth][imgHeight];
 
+//Water Pixels
+boolean[][] waterPixels = new boolean[imgWidth][imgHeight];
+
 //Spawn Images
 PImage spawns;
 
 //Humans
 ArrayList<Human> humans = new ArrayList<Human>();
 
+//All Humans Alive Or Dead Count
+int allHumans = 0;
+
 //Min Time Between Mates
 int minMateTime = 2;
+
+//Mutation Chance
+int mutationChance = 10;
 
 public void setup(){
     
 
     background(255, 255, 255);
     noStroke();
-    rectMode(CENTER);
 
     //Loads The Background Image File In Then Loads All Of It's Pixels
     outline = loadImage("outline.png");
@@ -65,29 +73,33 @@ public void setup(){
     spawns.loadPixels();
 
     //Loops Through Every Pixel And Checks If It Is A Valid Pixel From It's Colour
-    for (int x = 0; x < imgWidth; ++x) {
-        for (int y = 0; y < imgHeight; ++y) {
+    for (int y = 0; y < imgWidth; y++) {
+        for (int x = 0; x < imgHeight; x++) {
             int currentPixel = outline.pixels[x + y * width];
 
             if (currentPixel == sand || currentPixel == grass){
                 validPixels[x][y] = true;
             }
+
+            if(currentPixel == water){
+                waterPixels[x][y] = true;
+            }
         }
     }
 
     //Loops Through Every Pixel And Checks If It Is A Spawn Point
-    for (int x = 0; x < imgWidth; ++x) {
-        for (int y = 0; y < imgHeight; ++y) {
+    for (int y = 0; y < imgWidth; y++) {
+        for (int x = 0; x < imgHeight; x++) {
             int currentPixel = spawns.pixels[x + y * width];
 
             //If The Pixel Is Purple Spawn A Purple Tribesman
             if (currentPixel == purple){
-                humans.add(new Human(humans.size() + 1, new Coords(x, y), purple, 0, 13, 13)); //Adds The New Human To The Object List
+                humans.add(new Human(allHumans += 1, new Coords(x, y), purple, 0, 13, 13)); //Adds The New Human To The Object List
             }
 
             //If The Pixel Is Red Spawn A Red Tribesman
             if (currentPixel == red){
-                humans.add(new Human(humans.size() + 1, new Coords(x, y), red, 0, 13, 13)); //Adds The New Human To The List
+                humans.add(new Human(allHumans += 1, new Coords(x, y), red, 0, 13, 13)); //Adds The New Human To The List
             }
         }
     }
@@ -114,7 +126,7 @@ public void draw(){
         //Checks If The Human Is Dehydrated Or Not
         if(currentHuman.currentThirst != 0){
             //Checks If The Human Is Old Enough To Mate & Hasn't Mated In The Last 2 Days
-            if(currentHuman.dateOfBirth <= tickCount / 4 - minMateTime && currentHuman.lastPregnancy <= tickCount / 4 - minMateTime){
+            if(currentHuman.dateOfBirth <= tickCount / 4 - minMateTime && currentHuman.lastPregnancy <= tickCount - minMateTime){
                 //Gets The Nearest Mate That Isn't It's Self
                 int mateCheck = CheckForMates(currentHuman.currentPos.x, currentHuman.currentPos.y, currentHuman.id);
 
@@ -123,6 +135,9 @@ public void draw(){
                     Mate(currentHuman, humans.get(mateCheck));
                 }
             }
+
+            //Checks It's Neighbouring Pixels For Water
+            SearchForWater(currentHuman);
 
             //Moves Them In A Random Direction
             currentHuman.Move();
@@ -145,13 +160,25 @@ public void draw(){
     delay(PApplet.parseInt(tickTime * 1000)); //Converts From Seconds To Millis For The Func
 }
 
+//Searches The Neighbouring Pixels For A Water One To Drink From
+public void SearchForWater(Human currentHuman){
+    for (int y = currentHuman.currentPos.y - 1; y <= currentHuman.currentPos.y + 2; y++) {
+        for (int x = currentHuman.currentPos.x - 1; x <= currentHuman.currentPos.x + 2; x++) {
+            if(waterPixels[x][y] == true){
+                currentHuman.Drink();
+                break;
+            }
+        }
+    }
+}
+
 //Creates A New Child Based Of The Mum & Dad
 public void Mate(Human dad, Human mum){
     //The Child Object
-    Human child = new Human(humans.size() + 1, dad.currentPos, dad.tribeColour, tickCount / 4, dad.maxThirst, mum.maxThirst);
+    Human child = new Human(allHumans += 1, dad.currentPos, dad.tribeColour, tickCount / 4, dad.maxThirst, mum.maxThirst);
 
-    dad.GiveBirth(tickCount / 4);
-    mum.GiveBirth(tickCount / 4);
+    dad.GiveBirth(tickCount);
+    mum.GiveBirth(tickCount);
 
     //Adds The Child To The List Of Humans
     humans.add(child);
@@ -171,7 +198,7 @@ public int CheckForMates(int x, int y, int currentHumanID){
             //Sees How Far Way The Current Human Is
             if (dist(x,y, currentHuman.currentPos.x, currentHuman.currentPos.y) <= 2) {
                 //If The Human Is Old Enough To Mate Sent Their ID Out
-                if(currentHuman.dateOfBirth <= tickCount / 4 - minMateTime && currentHuman.lastPregnancy <= tickCount / 4 - minMateTime){
+                if(currentHuman.dateOfBirth <= tickCount / 4 - minMateTime && currentHuman.lastPregnancy <= tickCount - minMateTime){
                     return i;
                 }
             }
@@ -246,6 +273,13 @@ public class Human{
 
         //Randomly Picks One Of The Parents Max Thirsts
         maxThirst = PApplet.parseInt(random(2)) == 1? dadMaxThirst : mumMaxThirst;
+
+        //Has A Chance To Mutate Max Thirst
+        if (PApplet.parseInt(random(101)) <= mutationChance) {
+            maxThirst += PApplet.parseInt(random(-1, 2));
+        }
+
+        //Sets The Current Thirst To Max First
         currentThirst = maxThirst;
     }
 
@@ -297,6 +331,10 @@ public class Human{
 
     public void GiveBirth(int currentDay){
         lastPregnancy = currentDay;
+    }
+
+    public void Drink(){
+        currentThirst = maxThirst;
     }
 }
   public void settings() {  size(512, 512); }
