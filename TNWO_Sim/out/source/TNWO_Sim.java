@@ -253,23 +253,59 @@ public boolean CheckValidPos(int xPos, int yPos){
 public void SendOSCMessage(){
     //The Number Of Purple Humans
     int purpleHumans = 0;
-
     //Number Of Red Humans
     int redHumans = 0;
 
-    //Gets The Colour Of Each Human
+    //Highest Thirst Value
+    int highestThirst = 0;
+    //Adverage Thirst Value
+    int advThirst = 0;
+
+    //Array Of All Child Counts
+    int[] childCount = new int[humans.size()];
+    //Array Of All Ages
+    int[] ages = new int[humans.size()];
+
+    //Gets The Info From Each Human
     for (int i = 0; i < humans.size(); ++i) {
-        if (humans.get(i).tribeColour == purple) {
+        Human currentHuman = humans.get(i);
+
+        //Gets The Humans Colour
+        if (currentHuman.tribeColour == purple) {
             purpleHumans++;
         }
         else{
             redHumans++;
         }
+
+        //Checks If It's The Highest Thirst
+        if(currentHuman.maxThirst > highestThirst){
+            highestThirst = currentHuman.maxThirst;
+        }
+
+        //Adds The Current Max Thirst To The Adv Calcualtion
+        advThirst += currentHuman.maxThirst;
+
+        //Adds It's Child Count To The Array
+        childCount[i] = currentHuman.childrenCount;
+
+        //Adds It's Age To The Array
+        ages[i] = (tickCount / 4) - currentHuman.dateOfBirth;
     }
 
-    OscMessage myMessage = new OscMessage("/test");
+    //Divides All The Thirsts By The Amount
+    advThirst = advThirst / humans.size();
+    println(humans.size());
+    println(ages);
+
+    //Creates The Message
+    OscMessage myMessage = new OscMessage("/Sim");
     myMessage.add(purpleHumans);
     myMessage.add(redHumans);
+    myMessage.add(highestThirst);
+    myMessage.add(advThirst);
+    myMessage.add(childCount);
+    myMessage.add(ages);
 
     //Sends The Message
     oscP5.send(myMessage, myRemoteLocation);
@@ -307,6 +343,9 @@ public class Human{
 
     //Pregnancy Date
     int lastPregnancy = 0;
+
+    //Number Of Children
+    int childrenCount = 0;
 
     public Human (int _id, Coords _startPos, int tColour, int dob, int dadMaxThirst, int mumMaxThirst) {
         id = _id;
@@ -379,6 +418,7 @@ public class Human{
 
     public void GiveBirth(int currentDay){
         lastPregnancy = currentDay;
+        childrenCount++;
     }
 
     public void Drink(){

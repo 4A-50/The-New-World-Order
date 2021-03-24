@@ -9,12 +9,26 @@ NetAddress myRemoteLocation;
 color purple = color(136, 3, 252);
 //Red
 color red = color(255, 0, 0);
+//Blue
+color water = color(91, 208, 242);
 
 //Number Of Purple Humans
 int purpleHumans = 0;
 
 //Number Of Red Humans
 int redHumans = 0;
+
+//Highest Thirst Each Tick
+int maxThirst = 0;
+
+//Adverage Thirst Per Tick
+int advThirst = 0;
+
+//Array Of Children Count
+int[] childCount;
+
+//Array Of Ages
+int[] ages;
 
 void setup(){
 	size(800, 800);
@@ -29,6 +43,7 @@ void setup(){
 void draw(){
   //Sets The Background To Grey
 	background(150);
+  rectMode(CORNER);
 
   //Creates The Purple Rectangle
   fill(purple);
@@ -39,6 +54,12 @@ void draw(){
   fill(red);
   float rM = map(redHumans, 0, purpleHumans + redHumans, 0, width);
   rect(pM, 0, rM, height);
+  
+  //Creates The Blue Square
+  rectMode(CENTER);
+  fill(water);
+  float size = map(advThirst, 0, maxThirst, height / 4, (height / 4) * 3);
+  rect(width / 2, height / 2, (width / 4) * 3, size);
 }
 
 //Runs When An OCS Message Is Recived
@@ -47,4 +68,14 @@ void oscEvent(OscMessage theOscMessage){
 	purpleHumans = theOscMessage.get(0).intValue();
   //Gets The Red Human Count
   redHumans = theOscMessage.get(1).intValue();
+  
+  //Gets The Higest Thirst Value
+  maxThirst = theOscMessage.get(2).intValue();
+  //Gets The Adverage Thirst Value
+  advThirst = theOscMessage.get(3).intValue();
+  
+  //Gets The Child Count Array
+  childCount = theOscMessage.get(4).midiValue();
+  //Gets The Age Array
+  ages = theOscMessage.get(5).midiValue();
 }

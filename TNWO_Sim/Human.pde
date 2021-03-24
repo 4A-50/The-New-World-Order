@@ -23,6 +23,9 @@ public class Human{
     //Pregnancy Date
     int lastPregnancy = 0;
 
+    //Number Of Children
+    int childrenCount = 0;
+
     public Human (int _id, Coords _startPos, color tColour, int dob, int dadMaxThirst, int mumMaxThirst) {
         id = _id;
         startPos = _startPos;
@@ -94,6 +97,7 @@ public class Human{
 
     public void GiveBirth(int currentDay){
         lastPregnancy = currentDay;
+        childrenCount++;
     }
 
     public void Drink(){
