@@ -90,12 +90,12 @@ void setup(){
 
             //If The Pixel Is Purple Spawn A Purple Tribesman
             if (currentPixel == purple){
-                humans.add(new Human(allHumans += 1, new Coords(x, y), purple, 0, 13, 13)); //Adds The New Human To The Object List
+                humans.add(new Human(allHumans += 1, new Coords(x, y), purple, 0, 13, 13, 15, 15, 3, 3)); //Adds The New Human To The Object List
             }
 
             //If The Pixel Is Red Spawn A Red Tribesman
             if (currentPixel == red){
-                humans.add(new Human(allHumans += 1, new Coords(x, y), red, 0, 13, 13)); //Adds The New Human To The List
+                humans.add(new Human(allHumans += 1, new Coords(x, y), red, 0, 13, 13, 15, 15, 3, 3)); //Adds The New Human To The List
             }
         }
     }
@@ -121,6 +121,25 @@ void draw(){
 
         //Checks If The Human Is Dehydrated Or Not
         if(currentHuman.currentThirst != 0){
+            //Looks Around For Water
+            Coords nearestWater = Look(currentHuman);
+
+            //Checks It Actualy Saw Water
+            if(nearestWater.x != currentHuman.currentPos.x + currentHuman.eyeSight + 5 && nearestWater.y != currentHuman.currentPos.y + currentHuman.eyeSight + 5){
+                //Checks The Humans Target Isn't Null
+                if(currentHuman.target != null){
+                    if(dist(currentHuman.currentPos.x, currentHuman.currentPos.x, nearestWater.x, nearestWater.y) < dist(currentHuman.currentPos.x, currentHuman.currentPos.x, currentHuman.target.x, currentHuman.target.y)){
+                        currentHuman.target = nearestWater;
+                    }
+                }
+                else{
+                    currentHuman.target = nearestWater;
+                }
+            }
+
+            //Checks It's Neighbouring Pixels For Water
+            DrinkWater(currentHuman);
+
             //Checks If The Human Is Old Enough To Mate & Hasn't Mated In The Last 2 Days
             if(currentHuman.dateOfBirth <= tickCount / 4 - minMateTime && currentHuman.lastPregnancy <= tickCount - minMateTime){
                 //Gets The Nearest Mate That Isn't It's Self
@@ -131,9 +150,6 @@ void draw(){
                     Mate(currentHuman, humans.get(mateCheck));
                 }
             }
-
-            //Checks It's Neighbouring Pixels For Water
-            DrinkWater(currentHuman);
 
             //Moves Them In A Random Direction
             currentHuman.Move();
@@ -159,13 +175,42 @@ void draw(){
     delay(int(tickTime * 1000)); //Converts From Seconds To Millis For The Func
 }
 
+//Searches The Humans Eyesight For The Nearest Water
+Coords Look(Human currentHuman){
+    //List Of All Seeable Water Pixels
+    ArrayList<Coords> nearWater = new ArrayList<Coords>();
+
+    //Closest Water Pixel Initialised Further Out Then They Can See
+    Coords nearestWaterPixel = new Coords(currentHuman.currentPos.x + currentHuman.eyeSight + 5, currentHuman.currentPos.y + currentHuman.eyeSight + 5);
+
+    //Loops Through All The Pixels In The Humans Eyesight Range
+    for (int y = currentHuman.currentPos.y - currentHuman.eyeSight; y <= currentHuman.currentPos.y + (currentHuman.eyeSight + 1); y++) {
+        for (int x = currentHuman.currentPos.x - currentHuman.eyeSight; x <= currentHuman.currentPos.x + (currentHuman.eyeSight + 1); x++) {
+            if(waterPixels[x][y] == true){
+                nearWater.add(new Coords(x, y));
+            }
+        }
+    }
+
+    //Finds The Closest Water Pixel
+    for (int i = 0; i < nearWater.size(); ++i) {
+        if (dist(currentHuman.currentPos.x, currentHuman.currentPos.x, nearWater.get(i).x, nearWater.get(i).y) < 
+            dist(currentHuman.currentPos.x, currentHuman.currentPos.x, nearestWaterPixel.x, nearestWaterPixel.y)) {
+            nearestWaterPixel = nearWater.get(i);
+        }
+    }
+
+    //Returns The Nearest Water Pixel Location
+    return nearestWaterPixel;
+}
+
 //Searches The Neighbouring Pixels For A Water One To Drink From
 void DrinkWater(Human currentHuman){
     for (int y = currentHuman.currentPos.y - 1; y <= currentHuman.currentPos.y + 2; y++) {
         for (int x = currentHuman.currentPos.x - 1; x <= currentHuman.currentPos.x + 2; x++) {
             if(waterPixels[x][y] == true){
                 currentHuman.Drink();
-                break;
+                return;
             }
         }
     }
@@ -174,7 +219,7 @@ void DrinkWater(Human currentHuman){
 //Creates A New Child Based Of The Mum & Dad
 void Mate(Human dad, Human mum){
     //The Child Object
-    Human child = new Human(allHumans += 1, dad.currentPos, dad.tribeColour, tickCount / 4, dad.maxThirst, mum.maxThirst);
+    Human child = new Human(allHumans += 1, dad.currentPos, dad.tribeColour, tickCount / 4, dad.maxThirst, mum.maxThirst, dad.eyeSight, mum.eyeSight, dad.speed, mum.speed);
 
     dad.GiveBirth(tickCount);
     mum.GiveBirth(tickCount);
@@ -276,8 +321,6 @@ void SendOSCMessage(){
 
     //Divides All The Thirsts By The Amount
     advThirst = advThirst / humans.size();
-    println(humans.size());
-    println(ages);
 
     //Creates The Message
     OscMessage myMessage = new OscMessage("/Sim");

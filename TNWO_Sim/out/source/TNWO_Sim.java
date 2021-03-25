@@ -109,12 +109,12 @@ public void setup(){
 
             //If The Pixel Is Purple Spawn A Purple Tribesman
             if (currentPixel == purple){
-                humans.add(new Human(allHumans += 1, new Coords(x, y), purple, 0, 13, 13)); //Adds The New Human To The Object List
+                humans.add(new Human(allHumans += 1, new Coords(x, y), purple, 0, 13, 13, 15, 15, 3, 3)); //Adds The New Human To The Object List
             }
 
             //If The Pixel Is Red Spawn A Red Tribesman
             if (currentPixel == red){
-                humans.add(new Human(allHumans += 1, new Coords(x, y), red, 0, 13, 13)); //Adds The New Human To The List
+                humans.add(new Human(allHumans += 1, new Coords(x, y), red, 0, 13, 13, 15, 15, 3, 3)); //Adds The New Human To The List
             }
         }
     }
@@ -140,6 +140,25 @@ public void draw(){
 
         //Checks If The Human Is Dehydrated Or Not
         if(currentHuman.currentThirst != 0){
+            //Looks Around For Water
+            Coords nearestWater = Look(currentHuman);
+
+            //Checks It Actualy Saw Water
+            if(nearestWater.x != currentHuman.currentPos.x + currentHuman.eyeSight + 5 && nearestWater.y != currentHuman.currentPos.y + currentHuman.eyeSight + 5){
+                //Checks The Humans Target Isn't Null
+                if(currentHuman.target != null){
+                    if(dist(currentHuman.currentPos.x, currentHuman.currentPos.x, nearestWater.x, nearestWater.y) < dist(currentHuman.currentPos.x, currentHuman.currentPos.x, currentHuman.target.x, currentHuman.target.y)){
+                        currentHuman.target = nearestWater;
+                    }
+                }
+                else{
+                    currentHuman.target = nearestWater;
+                }
+            }
+
+            //Checks It's Neighbouring Pixels For Water
+            DrinkWater(currentHuman);
+
             //Checks If The Human Is Old Enough To Mate & Hasn't Mated In The Last 2 Days
             if(currentHuman.dateOfBirth <= tickCount / 4 - minMateTime && currentHuman.lastPregnancy <= tickCount - minMateTime){
                 //Gets The Nearest Mate That Isn't It's Self
@@ -150,9 +169,6 @@ public void draw(){
                     Mate(currentHuman, humans.get(mateCheck));
                 }
             }
-
-            //Checks It's Neighbouring Pixels For Water
-            DrinkWater(currentHuman);
 
             //Moves Them In A Random Direction
             currentHuman.Move();
@@ -178,13 +194,42 @@ public void draw(){
     delay(PApplet.parseInt(tickTime * 1000)); //Converts From Seconds To Millis For The Func
 }
 
+//Searches The Humans Eyesight For The Nearest Water
+public Coords Look(Human currentHuman){
+    //List Of All Seeable Water Pixels
+    ArrayList<Coords> nearWater = new ArrayList<Coords>();
+
+    //Closest Water Pixel Initialised Further Out Then They Can See
+    Coords nearestWaterPixel = new Coords(currentHuman.currentPos.x + currentHuman.eyeSight + 5, currentHuman.currentPos.y + currentHuman.eyeSight + 5);
+
+    //Loops Through All The Pixels In The Humans Eyesight Range
+    for (int y = currentHuman.currentPos.y - currentHuman.eyeSight; y <= currentHuman.currentPos.y + (currentHuman.eyeSight + 1); y++) {
+        for (int x = currentHuman.currentPos.x - currentHuman.eyeSight; x <= currentHuman.currentPos.x + (currentHuman.eyeSight + 1); x++) {
+            if(waterPixels[x][y] == true){
+                nearWater.add(new Coords(x, y));
+            }
+        }
+    }
+
+    //Finds The Closest Water Pixel
+    for (int i = 0; i < nearWater.size(); ++i) {
+        if (dist(currentHuman.currentPos.x, currentHuman.currentPos.x, nearWater.get(i).x, nearWater.get(i).y) < 
+            dist(currentHuman.currentPos.x, currentHuman.currentPos.x, nearestWaterPixel.x, nearestWaterPixel.y)) {
+            nearestWaterPixel = nearWater.get(i);
+        }
+    }
+
+    //Returns The Nearest Water Pixel Location
+    return nearestWaterPixel;
+}
+
 //Searches The Neighbouring Pixels For A Water One To Drink From
 public void DrinkWater(Human currentHuman){
     for (int y = currentHuman.currentPos.y - 1; y <= currentHuman.currentPos.y + 2; y++) {
         for (int x = currentHuman.currentPos.x - 1; x <= currentHuman.currentPos.x + 2; x++) {
             if(waterPixels[x][y] == true){
                 currentHuman.Drink();
-                break;
+                return;
             }
         }
     }
@@ -193,7 +238,7 @@ public void DrinkWater(Human currentHuman){
 //Creates A New Child Based Of The Mum & Dad
 public void Mate(Human dad, Human mum){
     //The Child Object
-    Human child = new Human(allHumans += 1, dad.currentPos, dad.tribeColour, tickCount / 4, dad.maxThirst, mum.maxThirst);
+    Human child = new Human(allHumans += 1, dad.currentPos, dad.tribeColour, tickCount / 4, dad.maxThirst, mum.maxThirst, dad.eyeSight, mum.eyeSight, dad.speed, mum.speed);
 
     dad.GiveBirth(tickCount);
     mum.GiveBirth(tickCount);
@@ -295,8 +340,6 @@ public void SendOSCMessage(){
 
     //Divides All The Thirsts By The Amount
     advThirst = advThirst / humans.size();
-    println(humans.size());
-    println(ages);
 
     //Creates The Message
     OscMessage myMessage = new OscMessage("/Sim");
@@ -347,19 +390,32 @@ public class Human{
     //Number Of Children
     int childrenCount = 0;
 
-    public Human (int _id, Coords _startPos, int tColour, int dob, int dadMaxThirst, int mumMaxThirst) {
+    //Eye Sight Distance
+    int eyeSight;
+
+    //Target Move Position
+    Coords target;
+
+    //Speed
+    int speed;
+
+    public Human (int _id, Coords _startPos, int tColour, int dob, int dadMaxThirst, int mumMaxThirst, int dadEyeSight, int mumEyeSight, int dadSpeed, int mumSpeed) {
         id = _id;
         startPos = _startPos;
         currentPos = _startPos;
         tribeColour = tColour;
         dateOfBirth = dob;
 
-        //Randomly Picks One Of The Parents Max Thirsts
+        //Randomly Picks One Of The Parents Traits
         maxThirst = PApplet.parseInt(random(2)) == 1? dadMaxThirst : mumMaxThirst;
+        eyeSight = PApplet.parseInt(random(2)) == 1? dadEyeSight : mumEyeSight;
+        speed = PApplet.parseInt(random(2)) == 1? dadSpeed : mumSpeed;
 
-        //Has A Chance To Mutate Max Thirst
+        //Has A Chance To Mutate Their Traits
         if (PApplet.parseInt(random(101)) <= mutationChance) {
             maxThirst += PApplet.parseInt(random(-1, 2));
+            eyeSight += PApplet.parseInt(random(-3, 4));
+            speed += PApplet.parseInt(random(-1, 3));
         }
 
         //Sets The Current Thirst To Max First
@@ -368,46 +424,52 @@ public class Human{
 
     //Moves The Human
     public void Move(){
-        boolean newLoc = false;
-        //Used To Stop The Movement If It Tries To Move To Many Times (Stops Crashes)
-        int loopCount = 0;
+        if(target != null){
+            println("I Should Move Now!");
+        }
+        //If There Isn't A Target
+        else{
+            boolean newLoc = false;
+            //Used To Stop The Movement If It Tries To Move To Many Times (Stops Crashes)
+            int loopCount = 0;
 
-        //Generates A New Random Location For A Human To Move To
-        while (newLoc == false && loopCount <= 16) {
-            int orientation = PApplet.parseInt(random(4));
-            int distance = PApplet.parseInt(random(4));
+            //Generates A New Random Location For A Human To Move To
+            while (newLoc == false && loopCount <= 4) {
+                int orientation = PApplet.parseInt(random(4));
+                int distance = speed;
 
-            int newX = 0;
-            int newY = 0;
+                int newX = 0;
+                int newY = 0;
 
-            //North
-            if (orientation == 0) {
-                newX = currentPos.x;
-                newY = currentPos.y - distance;
+                //North
+                if (orientation == 0) {
+                    newX = currentPos.x;
+                    newY = currentPos.y - distance;
+                }
+                //East
+                if (orientation == 1) {
+                    newX = currentPos.x + distance;
+                    newY = currentPos.y;
+                }
+                //South
+                if (orientation == 2) {
+                    newX = currentPos.x;
+                    newY = currentPos.y + distance;
+                }
+                //West
+                if (orientation == 3) {
+                    newX = currentPos.x - distance;
+                    newY = currentPos.y;
+                }
+
+                if(CheckValidPos(newX, newY) == true){
+                    currentPos = new Coords(newX, newY);
+
+                    newLoc = true;
+                }
+
+                loopCount++;
             }
-            //East
-            if (orientation == 1) {
-                newX = currentPos.x + distance;
-                newY = currentPos.y;
-            }
-            //South
-            if (orientation == 2) {
-                newX = currentPos.x;
-                newY = currentPos.y + distance;
-            }
-            //West
-            if (orientation == 3) {
-                newX = currentPos.x - distance;
-                newY = currentPos.y;
-            }
-
-            if(CheckValidPos(newX, newY) == true){
-                currentPos = new Coords(newX, newY);
-
-                newLoc = true;
-            }
-
-            loopCount++;
         }
     }
 

@@ -26,19 +26,32 @@ public class Human{
     //Number Of Children
     int childrenCount = 0;
 
-    public Human (int _id, Coords _startPos, color tColour, int dob, int dadMaxThirst, int mumMaxThirst) {
+    //Eye Sight Distance
+    int eyeSight;
+
+    //Target Move Position
+    Coords target;
+
+    //Speed
+    int speed;
+
+    public Human (int _id, Coords _startPos, color tColour, int dob, int dadMaxThirst, int mumMaxThirst, int dadEyeSight, int mumEyeSight, int dadSpeed, int mumSpeed) {
         id = _id;
         startPos = _startPos;
         currentPos = _startPos;
         tribeColour = tColour;
         dateOfBirth = dob;
 
-        //Randomly Picks One Of The Parents Max Thirsts
+        //Randomly Picks One Of The Parents Traits
         maxThirst = int(random(2)) == 1? dadMaxThirst : mumMaxThirst;
+        eyeSight = int(random(2)) == 1? dadEyeSight : mumEyeSight;
+        speed = int(random(2)) == 1? dadSpeed : mumSpeed;
 
-        //Has A Chance To Mutate Max Thirst
+        //Has A Chance To Mutate Their Traits
         if (int(random(101)) <= mutationChance) {
             maxThirst += int(random(-1, 2));
+            eyeSight += int(random(-3, 4));
+            speed += int(random(-1, 3));
         }
 
         //Sets The Current Thirst To Max First
@@ -47,46 +60,53 @@ public class Human{
 
     //Moves The Human
     public void Move(){
-        boolean newLoc = false;
-        //Used To Stop The Movement If It Tries To Move To Many Times (Stops Crashes)
-        int loopCount = 0;
+        //If There Is A Water Pixel Target
+        if(target != null){
+            
+        }
+        //If There Isn't A Target
+        else{
+            boolean newLoc = false;
+            //Used To Stop The Movement If It Tries To Move To Many Times (Stops Crashes)
+            int loopCount = 0;
 
-        //Generates A New Random Location For A Human To Move To
-        while (newLoc == false && loopCount <= 16) {
-            int orientation = int(random(4));
-            int distance = int(random(4));
+            //Generates A New Random Location For A Human To Move To
+            while (newLoc == false && loopCount <= 4) {
+                int orientation = int(random(4));
+                int distance = speed;
 
-            int newX = 0;
-            int newY = 0;
+                int newX = 0;
+                int newY = 0;
 
-            //North
-            if (orientation == 0) {
-                newX = currentPos.x;
-                newY = currentPos.y - distance;
+                //North
+                if (orientation == 0) {
+                    newX = currentPos.x;
+                    newY = currentPos.y - distance;
+                }
+                //East
+                if (orientation == 1) {
+                    newX = currentPos.x + distance;
+                    newY = currentPos.y;
+                }
+                //South
+                if (orientation == 2) {
+                    newX = currentPos.x;
+                    newY = currentPos.y + distance;
+                }
+                //West
+                if (orientation == 3) {
+                    newX = currentPos.x - distance;
+                    newY = currentPos.y;
+                }
+
+                if(CheckValidPos(newX, newY) == true){
+                    currentPos = new Coords(newX, newY);
+
+                    newLoc = true;
+                }
+
+                loopCount++;
             }
-            //East
-            if (orientation == 1) {
-                newX = currentPos.x + distance;
-                newY = currentPos.y;
-            }
-            //South
-            if (orientation == 2) {
-                newX = currentPos.x;
-                newY = currentPos.y + distance;
-            }
-            //West
-            if (orientation == 3) {
-                newX = currentPos.x - distance;
-                newY = currentPos.y;
-            }
-
-            if(CheckValidPos(newX, newY) == true){
-                currentPos = new Coords(newX, newY);
-
-                newLoc = true;
-            }
-
-            loopCount++;
         }
     }
 
