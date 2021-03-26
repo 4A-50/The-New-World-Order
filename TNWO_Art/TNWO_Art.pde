@@ -24,11 +24,11 @@ int maxThirst = 0;
 //Adverage Thirst Per Tick
 int advThirst = 0;
 
-//Array Of Children Count
-int[] childCount;
+//Highest Thirst Each Tick
+int maxSpeed = 0;
 
-//Array Of Ages
-int[] ages;
+//Adverage Thirst Per Tick
+int advSpeed = 0;
 
 void setup(){
 	size(800, 800);
@@ -69,13 +69,13 @@ void oscEvent(OscMessage theOscMessage){
   //Gets The Red Human Count
   redHumans = theOscMessage.get(1).intValue();
   
-  //Gets The Higest Thirst Value
+  //Gets The Highest Thirst Value
   maxThirst = theOscMessage.get(2).intValue();
   //Gets The Adverage Thirst Value
   advThirst = theOscMessage.get(3).intValue();
   
-  //Gets The Child Count Array
-  childCount = theOscMessage.get(4).midiValue();
-  //Gets The Age Array
-  ages = theOscMessage.get(5).midiValue();
+  //Gets The Highest Speed
+  maxSpeed = theOscMessage.get(4).intValue();
+  //Gets The Adverage Speed
+  advSpeed = theOscMessage.get(5).intValue();
 }

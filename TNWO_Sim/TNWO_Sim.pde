@@ -287,10 +287,10 @@ void SendOSCMessage(){
     //Adverage Thirst Value
     int advThirst = 0;
 
-    //Array Of All Child Counts
-    int[] childCount = new int[humans.size()];
-    //Array Of All Ages
-    int[] ages = new int[humans.size()];
+    //Higest Speed Value
+    int highestSpeed = 0;
+    //Adverage Speed Value
+    int advSpeed = 0;
 
     //Gets The Info From Each Human
     for (int i = 0; i < humans.size(); ++i) {
@@ -309,18 +309,23 @@ void SendOSCMessage(){
             highestThirst = currentHuman.maxThirst;
         }
 
+        //Checks If It's The Highest Speed
+        if(currentHuman.speed > highestSpeed){
+            highestSpeed = currentHuman.speed;
+        }
+
         //Adds The Current Max Thirst To The Adv Calcualtion
         advThirst += currentHuman.maxThirst;
 
-        //Adds It's Child Count To The Array
-        childCount[i] = currentHuman.childrenCount;
-
-        //Adds It's Age To The Array
-        ages[i] = (tickCount / 4) - currentHuman.dateOfBirth;
+        //Adds The Current Max Speed To The Adv Calcualtion
+        advSpeed += currentHuman.speed;
     }
 
     //Divides All The Thirsts By The Amount
     advThirst = advThirst / humans.size();
+
+    //Divides All The Speeds By The Amount
+    advSpeed = advSpeed / humans.size();
 
     //Creates The Message
     OscMessage myMessage = new OscMessage("/Sim");
@@ -328,8 +333,8 @@ void SendOSCMessage(){
     myMessage.add(redHumans);
     myMessage.add(highestThirst);
     myMessage.add(advThirst);
-    myMessage.add(childCount);
-    myMessage.add(ages);
+    myMessage.add(highestSpeed);
+    myMessage.add(advSpeed);
 
     //Sends The Message
     oscP5.send(myMessage, myRemoteLocation);
