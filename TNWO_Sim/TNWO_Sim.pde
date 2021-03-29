@@ -6,7 +6,7 @@ OscP5 oscP5;
 NetAddress myRemoteLocation;
 
 //Used To Save Simulation Data To A JSON File
-JSONObject  json;
+JSONArray tickArray = new JSONArray();
 
 //Time Between Ticks In Seconds
 float tickTime = 1f;
@@ -62,9 +62,6 @@ void setup(){
     oscP5 = new OscP5(this,12000);
     //IP Address Of Reciver And Port
     myRemoteLocation = new NetAddress("127.0.0.1",12000);
-
-    //Starts Json Object
-    json = new JSONObject();
 
     //Loads The Background Image File In Then Loads All Of It's Pixels
     outline = loadImage("outline.png");
@@ -173,9 +170,8 @@ void draw(){
     }
 
     //Sends The Simulation Data To The Art Sketch Via OSC
+    //And Saves The Data To A JSON File
     SendOSCMessage();
-    //Saves The Simulation Data To JSON File
-    SaveJson();
 
     tickCount++; // Updates The Tick Counter
 
@@ -346,71 +342,22 @@ void SendOSCMessage(){
 
     //Sends The Message
     oscP5.send(myMessage, myRemoteLocation);
-}
 
-void SaveJson(){
-    //JSON Array Of All Humans
-    JSONArray humanArray = new JSONArray();
+    //Creates A New JSON Object For This Tick
+    JSONObject tickInfo = new JSONObject();
 
-    //Loops Through All The Humans
-    for (int i = 0; i < humans.size(); ++i) {
-        //New JSON Object
-        JSONObject human = new JSONObject();
+    //Adds All The Info It Sends Over OSC
+    tickInfo.setInt("tick", tickCount);
+    tickInfo.setInt("purple humans", purpleHumans);
+    tickInfo.setInt("red humans", redHumans);
+    tickInfo.setInt("highest thirst", highestThirst);
+    tickInfo.setInt("adv thirst", advThirst);
+    tickInfo.setInt("highest speed", highestSpeed);
+    tickInfo.setInt("adv speed", advSpeed);
 
-        //Current Human
-        Human currentHuman = humans.get(i);
-        
-        //Sets The ID
-        human.setInt("id", currentHuman.id);
+    //Adds The JSONObject To The Tick Array
+    tickArray.setJSONObject(tickCount, tickInfo);
 
-        //Sets The Start Pos
-        JSONArray startPos = new JSONArray();
-        startPos.setInt(0, currentHuman.startPos.x);
-        startPos.setInt(1, currentHuman.startPos.y);
-        human.setJSONArray("start position", startPos);
-
-        //Sets The Current Pos
-        JSONArray currentPos = new JSONArray();
-        currentPos.setInt(0, currentHuman.currentPos.x);
-        currentPos.setInt(1, currentHuman.currentPos.y);
-        human.setJSONArray("current position", currentPos);
-
-        //Checks The Tribe Colour
-        if(currentHuman.tribeColour == red){
-            human.setString("tribe", "red");
-        }
-        else{
-            human.setString("tribe", "purple");
-        }
-
-        //Date Of Birth
-        human.setInt("dob", currentHuman.dateOfBirth);
-
-        //Water Value
-        human.setInt("thirst", currentHuman.currentThirst);
-
-        //Max Water Value
-        human.setInt("max thirst", currentHuman.maxThirst);
-
-        //Last Pregnancy
-        human.setInt("last mate", currentHuman.lastPregnancy);
-
-        //Number Of Children
-        human.setInt("children", currentHuman.childrenCount);
-
-        //Eye Sight Distance
-        human.setInt("eyesight", currentHuman.eyeSight);
-
-        //Speed
-        human.setInt("speed", currentHuman.speed);
-
-        //Adds This Human To The Array
-        humanArray.setJSONObject(i, human);
-    }
-
-    json.setInt("tick", tickCount);
-    json.setInt("day", tickCount / 4);
-    json.setJSONArray("humans", humanArray);
-
-    saveJSONObject(json, "SimulationData/tick" + tickCount + ".json");
+    //Saves It To Disk
+    saveJSONArray(tickArray, "SimulationData.json");
 }
