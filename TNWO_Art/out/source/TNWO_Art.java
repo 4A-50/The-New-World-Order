@@ -1,5 +1,24 @@
-import oscP5.*;
-import netP5.*;
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import oscP5.*; 
+import netP5.*; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+public class TNWO_Art extends PApplet {
+
+
+
 
 //OSC Info For Data Reciver
 OscP5 oscP5;
@@ -9,10 +28,10 @@ NetAddress myRemoteLocation;
 boolean drawNow = false;
 
 //Colours
-color purple = color(136, 3, 252); //Purple
-color red = color(255, 0, 0); //Red
-color blue = color(91, 208, 242); //Blue
-color green = color(152, 255, 138); //Green
+int purple = color(136, 3, 252); //Purple
+int red = color(255, 0, 0); //Red
+int blue = color(91, 208, 242); //Blue
+int green = color(152, 255, 138); //Green
 
 //Bounds
 int xMinBound;
@@ -44,8 +63,8 @@ int maxSpeed = 0;
 //Adverage Speed
 int advSpeed = 0;
 
-void setup(){
-	size(800, 800);
+public void setup(){
+	
 	//fullScreen();
 	
   	noFill();
@@ -61,7 +80,7 @@ void setup(){
 	setGradient(0, 0, width, height, blue, green);
 }
 
-void draw(){
+public void draw(){
 	//Only Runs The Draw Function When OSC Data Comes In
 	//Works Better Then A Delay Or Frame Limit As I Can Just Change Sim Speed
 	if (drawNow == true) {
@@ -69,7 +88,7 @@ void draw(){
 		setGradient(0, 0, width, height, blue, green);
 
 		//Works Out Which Squares Should Be What Color
-		int purpleSquareCount = int(map(purpleHumans, 0, purpleHumans + redHumans, 0, squareCount));
+		int purpleSquareCount = PApplet.parseInt(map(purpleHumans, 0, purpleHumans + redHumans, 0, squareCount));
 
 		//Used To Know How Many Squares Have Been Drawn
 		int inLoopSqaureCount = 1;
@@ -131,7 +150,7 @@ void draw(){
 }
 
 //Runs When An OCS Message Is Recived
-void oscEvent(OscMessage theOscMessage){
+public void oscEvent(OscMessage theOscMessage){
 	//Gets The Purple Human Count
 	purpleHumans = theOscMessage.get(0).intValue();
 	//Gets The Red Human Count
@@ -150,7 +169,7 @@ void oscEvent(OscMessage theOscMessage){
 	drawNow = true;
 }
 
-void CreateSafeArea(){
+public void CreateSafeArea(){
 	xMinBound = width / 8;
 	xMaxBound = (width / 8) * 7;
 	yMinBound = height / 8;
@@ -163,15 +182,25 @@ void CreateSafeArea(){
 	}
 }
 
-void setGradient(int x, int y, float w, float h, color c1, color c2) {
+public void setGradient(int x, int y, float w, float h, int c1, int c2) {
 	strokeWeight(1);
 
   	for (int i = y; i <= y+h; i++) {
 		float inter = map(i, y, y+h, 0, 1);
-		color c = lerpColor(c1, c2, inter);
+		int c = lerpColor(c1, c2, inter);
 		stroke(c);
 		line(x, i, x+w, i);
     }
 
 	strokeWeight(5);
+}
+  public void settings() { 	size(800, 800); }
+  static public void main(String[] passedArgs) {
+    String[] appletArgs = new String[] { "TNWO_Art" };
+    if (passedArgs != null) {
+      PApplet.main(concat(appletArgs, passedArgs));
+    } else {
+      PApplet.main(appletArgs);
+    }
+  }
 }
