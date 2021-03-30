@@ -33,6 +33,8 @@ int spacingSize = 25;
 int purpleHumans = 0;
 //Red Human Count
 int redHumans = 0;
+//Mixed Human Count
+int mixedHumans = 0;
 
 //Highest Thirst Value
 int maxThirst = 0;
@@ -137,16 +139,18 @@ void oscEvent(OscMessage theOscMessage){
 	purpleHumans = theOscMessage.get(0).intValue();
 	//Gets The Red Human Count
 	redHumans = theOscMessage.get(1).intValue();
+	//Gets The Mixed Human Count
+	mixedHumans = theOscMessage.get(2).intValue();
 
 	//Gets The Highest Thirst Value
-	maxThirst = theOscMessage.get(2).intValue();
+	maxThirst = theOscMessage.get(3).intValue();
 	//Gets The Adverage Thirst Value
-	advThirst = theOscMessage.get(3).intValue();
+	advThirst = theOscMessage.get(4)).intValue();
 
 	//Gets The Highest Speed
-	maxSpeed = theOscMessage.get(4).intValue();
+	maxSpeed = theOscMessage.get(5).intValue();
 	//Gets The Adverage Speed
-	advSpeed = theOscMessage.get(5).intValue();
+	advSpeed = theOscMessage.get(6).intValue();
 
 	drawNow = true;
 }

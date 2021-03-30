@@ -42,6 +42,7 @@ int cliff = color(181, 183, 181); //Cliff
 //Tribe Colours
 int purple = color(136, 3, 252); //Purple
 int red = color(255, 0, 0); //Red
+int mixRP = color(199,21,133); //Red Violet (Mix Of The 2 Tribes)
 
 //Image Width & Height
 int imgWidth = 512;
@@ -243,8 +244,18 @@ public void DrinkWater(Human currentHuman){
 public void Mate(Human dad, Human mum){
     //Checks There Is Space To Spawn The Child (Stops 39,000 Reds Spawing In Like 100px)
     if(CheckValidPos(dad.currentPos.x, dad.currentPos.y + 1) == true){
+
+        int childTribeColour;
+
+        if(dad.tribeColour != mum.tribeColour){
+            childTribeColour = mixRP;
+        }
+        else{
+            childTribeColour = dad.tribeColour;
+        }
+
         //The Child Object
-        Human child = new Human(allHumans += 1, new Coords(dad.currentPos.x, dad.currentPos.y + 1), dad.tribeColour, tickCount / 4, 
+        Human child = new Human(allHumans += 1, new Coords(dad.currentPos.x, dad.currentPos.y + 1), childTribeColour, tickCount / 4, 
                                 dad.maxThirst, mum.maxThirst, dad.eyeSight, mum.eyeSight, dad.speed, mum.speed);
 
         dad.GiveBirth(tickCount);
@@ -308,6 +319,8 @@ public void SendOSCMessage(){
     int purpleHumans = 0;
     //Number Of Red Humans
     int redHumans = 0;
+    //Number Of Mixed Humans
+    int mixedHumans = 0;
 
     //Highest Thirst Value
     int highestThirst = 0;
@@ -327,8 +340,11 @@ public void SendOSCMessage(){
         if (currentHuman.tribeColour == purple) {
             purpleHumans++;
         }
-        else{
+        if(currentHuman.tribeColour == red){
             redHumans++;
+        }
+        if (currentHuman.tribeColour == mixRP) {
+            mixedHumans++;
         }
 
         //Checks If It's The Highest Thirst
@@ -358,6 +374,7 @@ public void SendOSCMessage(){
     OscMessage myMessage = new OscMessage("/Sim");
     myMessage.add(purpleHumans);
     myMessage.add(redHumans);
+    myMessage.add(mixedHumans);
     myMessage.add(highestThirst);
     myMessage.add(advThirst);
     myMessage.add(highestSpeed);
@@ -373,6 +390,7 @@ public void SendOSCMessage(){
     tickInfo.setInt("tick", tickCount);
     tickInfo.setInt("purple humans", purpleHumans);
     tickInfo.setInt("red humans", redHumans);
+    tickInfo.setInt("mixed humans", mixedHumans);
     tickInfo.setInt("highest thirst", highestThirst);
     tickInfo.setInt("adv thirst", advThirst);
     tickInfo.setInt("highest speed", highestSpeed);
