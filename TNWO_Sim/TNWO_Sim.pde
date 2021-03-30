@@ -222,14 +222,18 @@ void DrinkWater(Human currentHuman){
 
 //Creates A New Child Based Of The Mum & Dad
 void Mate(Human dad, Human mum){
-    //The Child Object
-    Human child = new Human(allHumans += 1, dad.currentPos, dad.tribeColour, tickCount / 4, dad.maxThirst, mum.maxThirst, dad.eyeSight, mum.eyeSight, dad.speed, mum.speed);
+    //Checks There Is Space To Spawn The Child (Stops 39,000 Reds Spawing In Like 100px)
+    if(CheckValidPos(dad.currentPos.x, dad.currentPos.y + 1) == true){
+        //The Child Object
+        Human child = new Human(allHumans += 1, new Coords(dad.currentPos.x, dad.currentPos.y + 1), dad.tribeColour, tickCount / 4, 
+                                dad.maxThirst, mum.maxThirst, dad.eyeSight, mum.eyeSight, dad.speed, mum.speed);
 
-    dad.GiveBirth(tickCount);
-    mum.GiveBirth(tickCount);
+        dad.GiveBirth(tickCount);
+        mum.GiveBirth(tickCount);
 
-    //Adds The Child To The List Of Humans
-    humans.add(child);
+        //Adds The Child To The List Of Humans
+        humans.add(child);
+    }
 }
 
 //Checks Through All Humans To See If Ones Within 3 Pixels To Mate With

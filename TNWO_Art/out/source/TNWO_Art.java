@@ -93,15 +93,16 @@ public void draw(){
 		//Used To Know How Many Squares Have Been Drawn
 		int inLoopSqaureCount = 1;
 
-		//Mapped Rotation For Purple Squares
-		float purpleRotate = map(maxSpeed - advSpeed, 0, maxSpeed, 0, 90);
-
-		//Mapped Rotation For Red Squares
-		float redRotate = map(maxThirst - advThirst, 0, maxThirst, 0, 90);
-
 		//Loops Through All The Squares
 		for (int y = yMinBound + (spacingSize / 2); y < yMaxBound; y += squareSize + spacingSize) {
 			for (int x = xMinBound + (spacingSize / 2); x < xMaxBound; x += squareSize + spacingSize) {
+
+				//Mapped Rotation For Purple Squares
+				float purpleRotate = map(advSpeed + inLoopSqaureCount, 0, advThirst + squareCount, 0, 45);
+
+				//Mapped Rotation For Red Squares
+				float redRotate = map(advThirst + inLoopSqaureCount, 0, maxThirst + squareCount, 0, 45);
+
 				//Checks Whether It Is A Purple Or Red Square
 				if (inLoopSqaureCount <= purpleSquareCount) {
 					//Sets The Outline To Purple
@@ -113,7 +114,7 @@ public void draw(){
 						translate(x + (squareSize / 2), y + (squareSize / 2));
 
 						//Creates A New Rotation Angle To Apply To Anything After It
-						rotate(radians(purpleRotate + inLoopSqaureCount));
+						rotate(radians(purpleRotate));
 
 						//Draws The Rectangle With The Rotation At The Translated Pos
 						rect(-(squareSize / 2), -(squareSize / 2), squareSize, squareSize);
@@ -131,7 +132,7 @@ public void draw(){
 						translate(x + (squareSize / 2), y + (squareSize / 2));
 
 						//Creates A New Rotation Angle To Apply To Anything After It
-						rotate(radians(redRotate + inLoopSqaureCount));
+						rotate(radians(redRotate));
 
 						//Draws The Rectangle With The Rotation At The Translated Pos
 						rect(-(squareSize / 2), -(squareSize / 2), squareSize, squareSize);

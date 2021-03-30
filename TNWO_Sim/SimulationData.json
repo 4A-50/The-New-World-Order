@@ -75,7 +75,7 @@
     "highest thirst": 14,
     "highest speed": 5,
     "adv thirst": 13,
-    "red humans": 83,
+    "red humans": 77,
     "tick": 8,
     "adv speed": 3,
     "purple humans": 82
@@ -84,7 +84,7 @@
     "highest thirst": 14,
     "highest speed": 5,
     "adv thirst": 13,
-    "red humans": 84,
+    "red humans": 79,
     "tick": 9,
     "adv speed": 3,
     "purple humans": 85
@@ -93,549 +93,288 @@
     "highest thirst": 14,
     "highest speed": 5,
     "adv thirst": 13,
-    "red humans": 107,
+    "red humans": 83,
     "tick": 10,
     "adv speed": 3,
-    "purple humans": 102
+    "purple humans": 98
   },
   {
     "highest thirst": 14,
     "highest speed": 5,
     "adv thirst": 13,
-    "red humans": 108,
+    "red humans": 86,
     "tick": 11,
     "adv speed": 3,
-    "purple humans": 107
+    "purple humans": 106
   },
   {
     "highest thirst": 14,
     "highest speed": 5,
     "adv thirst": 13,
-    "red humans": 79,
+    "red humans": 45,
     "tick": 12,
+    "adv speed": 3,
+    "purple humans": 46
+  },
+  {
+    "highest thirst": 14,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 42,
+    "tick": 13,
+    "adv speed": 3,
+    "purple humans": 45
+  },
+  {
+    "highest thirst": 14,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 42,
+    "tick": 14,
+    "adv speed": 3,
+    "purple humans": 45
+  },
+  {
+    "highest thirst": 14,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 42,
+    "tick": 15,
+    "adv speed": 3,
+    "purple humans": 45
+  },
+  {
+    "highest thirst": 14,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 48,
+    "tick": 16,
+    "adv speed": 3,
+    "purple humans": 55
+  },
+  {
+    "highest thirst": 14,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 48,
+    "tick": 17,
+    "adv speed": 3,
+    "purple humans": 60
+  },
+  {
+    "highest thirst": 14,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 50,
+    "tick": 18,
+    "adv speed": 3,
+    "purple humans": 66
+  },
+  {
+    "highest thirst": 14,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 50,
+    "tick": 19,
+    "adv speed": 3,
+    "purple humans": 71
+  },
+  {
+    "highest thirst": 14,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 50,
+    "tick": 20,
+    "adv speed": 3,
+    "purple humans": 79
+  },
+  {
+    "highest thirst": 15,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 39,
+    "tick": 21,
+    "adv speed": 3,
+    "purple humans": 64
+  },
+  {
+    "highest thirst": 15,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 38,
+    "tick": 22,
+    "adv speed": 3,
+    "purple humans": 64
+  },
+  {
+    "highest thirst": 15,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 35,
+    "tick": 23,
+    "adv speed": 3,
+    "purple humans": 53
+  },
+  {
+    "highest thirst": 15,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 36,
+    "tick": 24,
     "adv speed": 3,
     "purple humans": 48
   },
   {
-    "highest thirst": 14,
+    "highest thirst": 15,
     "highest speed": 5,
     "adv thirst": 13,
-    "red humans": 77,
-    "tick": 13,
-    "adv speed": 3,
-    "purple humans": 46
-  },
-  {
-    "highest thirst": 14,
-    "highest speed": 6,
-    "adv thirst": 13,
-    "red humans": 86,
-    "tick": 14,
-    "adv speed": 3,
-    "purple humans": 46
-  },
-  {
-    "highest thirst": 14,
-    "highest speed": 6,
-    "adv thirst": 13,
-    "red humans": 86,
-    "tick": 15,
-    "adv speed": 3,
-    "purple humans": 46
-  },
-  {
-    "highest thirst": 14,
-    "highest speed": 7,
-    "adv thirst": 13,
-    "red humans": 115,
-    "tick": 16,
-    "adv speed": 3,
-    "purple humans": 57
-  },
-  {
-    "highest thirst": 14,
-    "highest speed": 7,
-    "adv thirst": 13,
-    "red humans": 115,
-    "tick": 17,
-    "adv speed": 3,
-    "purple humans": 63
-  },
-  {
-    "highest thirst": 14,
-    "highest speed": 7,
-    "adv thirst": 13,
-    "red humans": 144,
-    "tick": 18,
-    "adv speed": 3,
-    "purple humans": 72
-  },
-  {
-    "highest thirst": 14,
-    "highest speed": 7,
-    "adv thirst": 13,
-    "red humans": 144,
-    "tick": 19,
-    "adv speed": 3,
-    "purple humans": 75
-  },
-  {
-    "highest thirst": 14,
-    "highest speed": 7,
-    "adv thirst": 13,
-    "red humans": 182,
-    "tick": 20,
-    "adv speed": 3,
-    "purple humans": 80
-  },
-  {
-    "highest thirst": 14,
-    "highest speed": 7,
-    "adv thirst": 13,
-    "red humans": 170,
-    "tick": 21,
-    "adv speed": 3,
-    "purple humans": 61
-  },
-  {
-    "highest thirst": 14,
-    "highest speed": 7,
-    "adv thirst": 13,
-    "red humans": 202,
-    "tick": 22,
-    "adv speed": 3,
-    "purple humans": 59
-  },
-  {
-    "highest thirst": 14,
-    "highest speed": 7,
-    "adv thirst": 13,
-    "red humans": 189,
-    "tick": 23,
-    "adv speed": 3,
-    "purple humans": 42
-  },
-  {
-    "highest thirst": 14,
-    "highest speed": 7,
-    "adv thirst": 13,
-    "red humans": 244,
-    "tick": 24,
-    "adv speed": 3,
-    "purple humans": 40
-  },
-  {
-    "highest thirst": 14,
-    "highest speed": 7,
-    "adv thirst": 13,
-    "red humans": 244,
+    "red humans": 36,
     "tick": 25,
-    "adv speed": 3,
-    "purple humans": 43
-  },
-  {
-    "highest thirst": 15,
-    "highest speed": 7,
-    "adv thirst": 13,
-    "red humans": 300,
-    "tick": 26,
-    "adv speed": 3,
-    "purple humans": 46
-  },
-  {
-    "highest thirst": 15,
-    "highest speed": 7,
-    "adv thirst": 13,
-    "red humans": 300,
-    "tick": 27,
-    "adv speed": 3,
-    "purple humans": 51
-  },
-  {
-    "highest thirst": 15,
-    "highest speed": 7,
-    "adv thirst": 13,
-    "red humans": 390,
-    "tick": 28,
-    "adv speed": 3,
-    "purple humans": 57
-  },
-  {
-    "highest thirst": 15,
-    "highest speed": 7,
-    "adv thirst": 13,
-    "red humans": 376,
-    "tick": 29,
     "adv speed": 3,
     "purple humans": 49
   },
   {
     "highest thirst": 15,
-    "highest speed": 7,
+    "highest speed": 5,
     "adv thirst": 13,
-    "red humans": 460,
-    "tick": 30,
+    "red humans": 37,
+    "tick": 26,
     "adv speed": 3,
-    "purple humans": 44
+    "purple humans": 51
   },
   {
     "highest thirst": 15,
-    "highest speed": 7,
+    "highest speed": 5,
     "adv thirst": 13,
-    "red humans": 447,
+    "red humans": 38,
+    "tick": 27,
+    "adv speed": 3,
+    "purple humans": 53
+  },
+  {
+    "highest thirst": 15,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 39,
+    "tick": 28,
+    "adv speed": 3,
+    "purple humans": 60
+  },
+  {
+    "highest thirst": 15,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 36,
+    "tick": 29,
+    "adv speed": 3,
+    "purple humans": 54
+  },
+  {
+    "highest thirst": 15,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 36,
+    "tick": 30,
+    "adv speed": 3,
+    "purple humans": 53
+  },
+  {
+    "highest thirst": 15,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 35,
     "tick": 31,
+    "adv speed": 3,
+    "purple humans": 45
+  },
+  {
+    "highest thirst": 15,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 39,
+    "tick": 32,
+    "adv speed": 3,
+    "purple humans": 48
+  },
+  {
+    "highest thirst": 15,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 39,
+    "tick": 33,
+    "adv speed": 3,
+    "purple humans": 40
+  },
+  {
+    "highest thirst": 15,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 40,
+    "tick": 34,
+    "adv speed": 3,
+    "purple humans": 37
+  },
+  {
+    "highest thirst": 15,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 39,
+    "tick": 35,
+    "adv speed": 3,
+    "purple humans": 33
+  },
+  {
+    "highest thirst": 15,
+    "highest speed": 5,
+    "adv thirst": 13,
+    "red humans": 40,
+    "tick": 36,
     "adv speed": 3,
     "purple humans": 35
   },
   {
     "highest thirst": 15,
-    "highest speed": 7,
+    "highest speed": 5,
     "adv thirst": 13,
-    "red humans": 580,
-    "tick": 32,
-    "adv speed": 3,
-    "purple humans": 36
-  },
-  {
-    "highest thirst": 15,
-    "highest speed": 7,
-    "adv thirst": 13,
-    "red humans": 570,
-    "tick": 33,
-    "adv speed": 3,
-    "purple humans": 32
-  },
-  {
-    "highest thirst": 15,
-    "highest speed": 7,
-    "adv thirst": 13,
-    "red humans": 699,
-    "tick": 34,
-    "adv speed": 3,
-    "purple humans": 30
-  },
-  {
-    "highest thirst": 15,
-    "highest speed": 7,
-    "adv thirst": 13,
-    "red humans": 693,
-    "tick": 35,
-    "adv speed": 3,
-    "purple humans": 29
-  },
-  {
-    "highest thirst": 15,
-    "highest speed": 7,
-    "adv thirst": 13,
-    "red humans": 905,
-    "tick": 36,
-    "adv speed": 3,
-    "purple humans": 34
-  },
-  {
-    "highest thirst": 15,
-    "highest speed": 7,
-    "adv thirst": 13,
-    "red humans": 884,
+    "red humans": 38,
     "tick": 37,
     "adv speed": 3,
-    "purple humans": 32
+    "purple humans": 35
   },
   {
     "highest thirst": 15,
-    "highest speed": 7,
+    "highest speed": 5,
     "adv thirst": 13,
-    "red humans": 1084,
+    "red humans": 38,
     "tick": 38,
     "adv speed": 3,
     "purple humans": 32
   },
   {
     "highest thirst": 15,
-    "highest speed": 7,
+    "highest speed": 5,
     "adv thirst": 13,
-    "red humans": 1064,
+    "red humans": 37,
     "tick": 39,
     "adv speed": 3,
-    "purple humans": 29
+    "purple humans": 32
   },
   {
     "highest thirst": 15,
-    "highest speed": 8,
+    "highest speed": 5,
     "adv thirst": 13,
-    "red humans": 1386,
+    "red humans": 40,
     "tick": 40,
     "adv speed": 3,
-    "purple humans": 27
+    "purple humans": 32
   },
   {
     "highest thirst": 15,
-    "highest speed": 8,
+    "highest speed": 5,
     "adv thirst": 13,
-    "red humans": 1365,
+    "red humans": 39,
     "tick": 41,
     "adv speed": 3,
-    "purple humans": 20
-  },
-  {
-    "highest thirst": 15,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 1677,
-    "tick": 42,
-    "adv speed": 3,
-    "purple humans": 20
-  },
-  {
-    "highest thirst": 15,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 1658,
-    "tick": 43,
-    "adv speed": 3,
-    "purple humans": 18
-  },
-  {
-    "highest thirst": 15,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 2167,
-    "tick": 44,
-    "adv speed": 3,
-    "purple humans": 21
-  },
-  {
-    "highest thirst": 15,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 2129,
-    "tick": 45,
-    "adv speed": 3,
-    "purple humans": 17
-  },
-  {
-    "highest thirst": 15,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 2613,
-    "tick": 46,
-    "adv speed": 3,
-    "purple humans": 17
-  },
-  {
-    "highest thirst": 15,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 2575,
-    "tick": 47,
-    "adv speed": 3,
-    "purple humans": 17
-  },
-  {
-    "highest thirst": 15,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 3361,
-    "tick": 48,
-    "adv speed": 3,
-    "purple humans": 17
-  },
-  {
-    "highest thirst": 15,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 3313,
-    "tick": 49,
-    "adv speed": 3,
-    "purple humans": 12
-  },
-  {
-    "highest thirst": 15,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 4072,
-    "tick": 50,
-    "adv speed": 3,
-    "purple humans": 11
-  },
-  {
-    "highest thirst": 15,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 4033,
-    "tick": 51,
-    "adv speed": 3,
-    "purple humans": 8
-  },
-  {
-    "highest thirst": 16,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 5268,
-    "tick": 52,
-    "adv speed": 3,
-    "purple humans": 8
-  },
-  {
-    "highest thirst": 16,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 5189,
-    "tick": 53,
-    "adv speed": 3,
-    "purple humans": 6
-  },
-  {
-    "highest thirst": 16,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 6377,
-    "tick": 54,
-    "adv speed": 3,
-    "purple humans": 6
-  },
-  {
-    "highest thirst": 16,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 6308,
-    "tick": 55,
-    "adv speed": 3,
-    "purple humans": 4
-  },
-  {
-    "highest thirst": 16,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 8231,
-    "tick": 56,
-    "adv speed": 3,
-    "purple humans": 4
-  },
-  {
-    "highest thirst": 16,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 8131,
-    "tick": 57,
-    "adv speed": 3,
-    "purple humans": 1
-  },
-  {
-    "highest thirst": 16,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 9991,
-    "tick": 58,
-    "adv speed": 3,
-    "purple humans": 1
-  },
-  {
-    "highest thirst": 16,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 9906,
-    "tick": 59,
-    "adv speed": 3,
-    "purple humans": 0
-  },
-  {
-    "highest thirst": 16,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 12938,
-    "tick": 60,
-    "adv speed": 3,
-    "purple humans": 0
-  },
-  {
-    "highest thirst": 16,
-    "highest speed": 9,
-    "adv thirst": 13,
-    "red humans": 12768,
-    "tick": 61,
-    "adv speed": 3,
-    "purple humans": 0
-  },
-  {
-    "highest thirst": 16,
-    "highest speed": 10,
-    "adv thirst": 13,
-    "red humans": 15699,
-    "tick": 62,
-    "adv speed": 3,
-    "purple humans": 0
-  },
-  {
-    "highest thirst": 16,
-    "highest speed": 10,
-    "adv thirst": 13,
-    "red humans": 15553,
-    "tick": 63,
-    "adv speed": 3,
-    "purple humans": 0
-  },
-  {
-    "highest thirst": 16,
-    "highest speed": 10,
-    "adv thirst": 13,
-    "red humans": 20302,
-    "tick": 64,
-    "adv speed": 3,
-    "purple humans": 0
-  },
-  {
-    "highest thirst": 16,
-    "highest speed": 10,
-    "adv thirst": 13,
-    "red humans": 20073,
-    "tick": 65,
-    "adv speed": 3,
-    "purple humans": 0
-  },
-  {
-    "highest thirst": 16,
-    "highest speed": 10,
-    "adv thirst": 13,
-    "red humans": 24679,
-    "tick": 66,
-    "adv speed": 3,
-    "purple humans": 0
-  },
-  {
-    "highest thirst": 16,
-    "highest speed": 10,
-    "adv thirst": 13,
-    "red humans": 24477,
-    "tick": 67,
-    "adv speed": 3,
-    "purple humans": 0
-  },
-  {
-    "highest thirst": 16,
-    "highest speed": 10,
-    "adv thirst": 13,
-    "red humans": 31969,
-    "tick": 68,
-    "adv speed": 3,
-    "purple humans": 0
-  },
-  {
-    "highest thirst": 16,
-    "highest speed": 10,
-    "adv thirst": 13,
-    "red humans": 31607,
-    "tick": 69,
-    "adv speed": 3,
-    "purple humans": 0
-  },
-  {
-    "highest thirst": 16,
-    "highest speed": 10,
-    "adv thirst": 13,
-    "red humans": 38867,
-    "tick": 70,
-    "adv speed": 3,
-    "purple humans": 0
+    "purple humans": 25
   }
 ]
