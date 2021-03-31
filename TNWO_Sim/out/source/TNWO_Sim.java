@@ -28,7 +28,7 @@ NetAddress myRemoteLocation;
 JSONArray tickArray = new JSONArray();
 
 //Time Between Ticks In Seconds
-float tickTime = 1f;
+float tickTime = 0.1f;
 
 //The Current Tick Count
 int tickCount = 0;
@@ -332,6 +332,11 @@ public void SendOSCMessage(){
     //Adverage Speed Value
     int advSpeed = 0;
 
+    //Oldest Human
+    int highestAge = 0;
+    //Adverage Age
+    int advAge = 0;
+
     //Gets The Info From Each Human
     for (int i = 0; i < humans.size(); ++i) {
         Human currentHuman = humans.get(i);
@@ -357,11 +362,19 @@ public void SendOSCMessage(){
             highestSpeed = currentHuman.speed;
         }
 
-        //Adds The Current Max Thirst To The Adv Calcualtion
+        //Checks If It's The Oldest
+        if ((tickCount / 4) - currentHuman.dateOfBirth > highestAge) {
+            highestAge = (tickCount / 4) - currentHuman.dateOfBirth;
+        }
+
+        //Adds The Current Max Thirst To The Adv Calculation
         advThirst += currentHuman.maxThirst;
 
-        //Adds The Current Max Speed To The Adv Calcualtion
+        //Adds The Current Max Speed To The Adv Calculation
         advSpeed += currentHuman.speed;
+
+        //Adds The Current Age To The Adv Calculation
+        advAge += (tickCount / 4) - currentHuman.dateOfBirth;
     }
 
     //Divides All The Thirsts By The Amount
@@ -369,6 +382,9 @@ public void SendOSCMessage(){
 
     //Divides All The Speeds By The Amount
     advSpeed = advSpeed / humans.size();
+
+    //Divides ALl The Ages By The Amount
+    advAge = advAge / humans.size();
 
     //Creates The Message
     OscMessage myMessage = new OscMessage("/Sim");
@@ -379,6 +395,8 @@ public void SendOSCMessage(){
     myMessage.add(advThirst);
     myMessage.add(highestSpeed);
     myMessage.add(advSpeed);
+    myMessage.add(highestAge);
+    myMessage.add(advAge);
 
     //Sends The Message
     oscP5.send(myMessage, myRemoteLocation);
@@ -395,6 +413,8 @@ public void SendOSCMessage(){
     tickInfo.setInt("adv thirst", advThirst);
     tickInfo.setInt("highest speed", highestSpeed);
     tickInfo.setInt("adv speed", advSpeed);
+    tickInfo.setInt("oldest", highestAge);
+    tickInfo.setInt("adv age", advAge);
 
     //Adds The JSONObject To The Tick Array
     tickArray.setJSONObject(tickCount, tickInfo);

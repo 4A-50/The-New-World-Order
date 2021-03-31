@@ -5,14 +5,15 @@ import netP5.*;
 OscP5 oscP5;
 NetAddress myRemoteLocation;
 
-//Draw Bool
-boolean drawNow = false;
-
 //Colours
 color purple = color(136, 3, 252); //Purple
 color red = color(255, 0, 0); //Red
+color mixRP = color(199,21,133); //Redy Purple
 color blue = color(91, 208, 242); //Blue
 color green = color(152, 255, 138); //Green
+
+//Jitter Value
+int jitterValue = 5;
 
 //Bounds
 int xMinBound;
@@ -46,9 +47,15 @@ int maxSpeed = 0;
 //Adverage Speed
 int advSpeed = 0;
 
+//Oldest Human
+int maxAge = 0;
+//Adverage Age
+int advAge = 0;
+
 void setup(){
 	size(800, 800);
 	//fullScreen();
+	frameRate(10);
 	
   	noFill();
 
@@ -64,32 +71,52 @@ void setup(){
 }
 
 void draw(){
-	//Only Runs The Draw Function When OSC Data Comes In
-	//Works Better Then A Delay Or Frame Limit As I Can Just Change Sim Speed
-	if (drawNow == true) {
-		//Creates A Gradient Background
-		setGradient(0, 0, width, height, blue, green);
+	//Creates A Gradient Background
+	setGradient(0, 0, width, height, blue, green);
 
-		//Works Out Which Squares Should Be What Color
-		int purpleSquareCount = int(map(purpleHumans, 0, purpleHumans + redHumans, 0, squareCount));
+	//Works Out Which Squares Should Be What Color
+	int purpleSquareCount = int(map(purpleHumans, 0, purpleHumans + redHumans + mixedHumans, 0, squareCount));
+	int mixedSquareCount = int(map(mixedHumans, 0, purpleHumans + redHumans + mixedHumans, 0, squareCount));
 
-		//Used To Know How Many Squares Have Been Drawn
-		int inLoopSqaureCount = 1;
+	//Used To Know How Many Squares Have Been Drawn
+	int inLoopSqaureCount = 1;
 
-		//Loops Through All The Squares
-		for (int y = yMinBound + (spacingSize / 2); y < yMaxBound; y += squareSize + spacingSize) {
-			for (int x = xMinBound + (spacingSize / 2); x < xMaxBound; x += squareSize + spacingSize) {
+	//Loops Through All The Squares
+	for (int y = yMinBound + (spacingSize / 2); y < yMaxBound; y += squareSize + spacingSize) {
+		for (int x = xMinBound + (spacingSize / 2); x < xMaxBound; x += squareSize + spacingSize) {
 
-				//Mapped Rotation For Purple Squares
-				float purpleRotate = map(advSpeed + inLoopSqaureCount, 0, advThirst + squareCount, 0, 45);
+			//Rotation For Purple Squares
+			float purpleRotate = (maxSpeed - advSpeed) + inLoopSqaureCount;
 
-				//Mapped Rotation For Red Squares
-				float redRotate = map(advThirst + inLoopSqaureCount, 0, maxThirst + squareCount, 0, 45);
+			//Rotation For Red Squares
+			float redRotate = (maxThirst - advThirst) + inLoopSqaureCount;
 
-				//Checks Whether It Is A Purple Or Red Square
-				if (inLoopSqaureCount <= purpleSquareCount) {
-					//Sets The Outline To Purple
-					stroke(purple);
+			//Rotation For Mixed Squares
+			float mixedRotate = (maxAge - advAge) + inLoopSqaureCount;
+
+			//Checks Whether It Is A Purple Or Red Square
+			if (inLoopSqaureCount <= purpleSquareCount) {
+				//Sets The Outline To Purple
+				stroke(purple);
+
+				//Creates A New PushPop Matrix Allowing Translations To Only Effect This Square
+				pushMatrix();
+					//Moves The Start Pos (0,0) To This Location
+					translate(x + (squareSize / 2), y + (squareSize / 2));
+
+					//Creates A New Rotation Angle To Apply To Anything After It
+					rotate(radians(purpleRotate + Jitter()));
+
+					//Draws The Rectangle With The Rotation At The Translated Pos
+					rect(-(squareSize / 2), -(squareSize / 2), squareSize, squareSize);
+
+				//Pops The Matrix
+				popMatrix();
+			}
+			else {
+				if (inLoopSqaureCount <= mixedSquareCount) {
+					//Sets The Outline To The Mixed Colour
+					stroke(mixRP);
 
 					//Creates A New PushPop Matrix Allowing Translations To Only Effect This Square
 					pushMatrix();
@@ -97,7 +124,7 @@ void draw(){
 						translate(x + (squareSize / 2), y + (squareSize / 2));
 
 						//Creates A New Rotation Angle To Apply To Anything After It
-						rotate(radians(purpleRotate));
+						rotate(radians(mixedRotate + Jitter()));
 
 						//Draws The Rectangle With The Rotation At The Translated Pos
 						rect(-(squareSize / 2), -(squareSize / 2), squareSize, squareSize);
@@ -105,7 +132,7 @@ void draw(){
 					//Pops The Matrix
 					popMatrix();
 				}
-				else {
+				else{
 					//Sets The Outline To Red
 					stroke(red);
 
@@ -115,7 +142,7 @@ void draw(){
 						translate(x + (squareSize / 2), y + (squareSize / 2));
 
 						//Creates A New Rotation Angle To Apply To Anything After It
-						rotate(radians(redRotate));
+						rotate(radians(redRotate + Jitter()));
 
 						//Draws The Rectangle With The Rotation At The Translated Pos
 						rect(-(squareSize / 2), -(squareSize / 2), squareSize, squareSize);
@@ -123,14 +150,17 @@ void draw(){
 					//Pops The Matrix
 					popMatrix();
 				}
-
-				//Increments The Squares Drawn Counter
-				inLoopSqaureCount++;
 			}
-		}
 
-		drawNow = false;
+			//Increments The Squares Drawn Counter
+			inLoopSqaureCount++;
+		}
 	}
+}
+
+//Creates A Randome "Jitter" Value From The Range In The Global Var
+int Jitter(){
+	return int(random(-jitterValue, jitterValue));
 }
 
 //Runs When An OCS Message Is Recived
@@ -145,14 +175,17 @@ void oscEvent(OscMessage theOscMessage){
 	//Gets The Highest Thirst Value
 	maxThirst = theOscMessage.get(3).intValue();
 	//Gets The Adverage Thirst Value
-	advThirst = theOscMessage.get(4)).intValue();
+	advThirst = theOscMessage.get(4).intValue();
 
 	//Gets The Highest Speed
 	maxSpeed = theOscMessage.get(5).intValue();
 	//Gets The Adverage Speed
 	advSpeed = theOscMessage.get(6).intValue();
 
-	drawNow = true;
+	//Gets The Oldest
+	maxAge = theOscMessage.get(7).intValue();
+	//Gets The Adverage Age
+	advAge = theOscMessage.get(8).intValue();
 }
 
 void CreateSafeArea(){
