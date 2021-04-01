@@ -9,4 +9,4 @@ The Humans Can Go 3 Days Without Water Which Their Main Goal Is To Find, And Can
 The Infomation The Simulation Collects Is Streamed Via OSC To Another Processing Sketch Which Creates A Genorative Art Peice From The Data.
 
 ### Discord
-![4A50 Studios Discord](https://discordapp.com/api/guilds/657328074748198912/widget.png?style=banner2)
+[![4A50 Studios Discord](https://discordapp.com/api/guilds/657328074748198912/widget.png?style=banner2)](https://discord.gg/kGbFbAUPWF)
