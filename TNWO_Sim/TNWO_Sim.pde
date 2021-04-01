@@ -9,7 +9,7 @@ NetAddress myRemoteLocation;
 JSONArray tickArray = new JSONArray();
 
 //Time Between Ticks In Seconds
-float tickTime = 0.1f;
+float tickTime = 1f;
 
 //The Current Tick Count
 int tickCount = 0;
@@ -52,6 +52,9 @@ int minMateTime = 2;
 
 //Mutation Chance
 int mutationChance = 10;
+
+//Gold Digger Chance
+int goldDiggerChange = 15;
 
 void setup(){
     size(512, 512);
@@ -125,19 +128,50 @@ void draw(){
 
         //Checks If The Human Is Dehydrated Or Not
         if(currentHuman.currentThirst != 0){
-            //Looks Around For Water
-            Coords nearestWater = Look(currentHuman);
+            //Checks If They Can Go A Few Days Before Water
+            if(currentHuman.currentThirst >= 10) {
+                //Creates A Random Target Location For The Current Human To Explore
+                //Desinged To Allow Them To Move Away From Water Intead Of Becoming River Bank Dwellers
+                Coords exploreTarget = new Coords(int(random(currentHuman.currentPos.x - 10, currentHuman.currentPos.x + 10)),
+                                                  int(random(currentHuman.currentPos.y - 10, currentHuman.currentPos.y + 10)));
 
-            //Checks It Actualy Saw Water
-            if(nearestWater.x != currentHuman.currentPos.x + currentHuman.eyeSight + 5 && nearestWater.y != currentHuman.currentPos.y + currentHuman.eyeSight + 5){
+                //Loop Limiter To Stop Infinite Searches
+                int loopLimiter = 0;
+
+                //Checks Its A Valid Position
+                while(CheckValidPos(exploreTarget.x, exploreTarget.y) != true && loopLimiter <= 16){
+                    exploreTarget = new Coords(int(random(currentHuman.currentPos.x - 10, currentHuman.currentPos.x + 10)),
+                                               int(random(currentHuman.currentPos.y - 10, currentHuman.currentPos.y + 10)));
+
+                    loopLimiter ++;
+                }
+                
                 //Checks The Humans Target Isn't Null
                 if(currentHuman.target != null){
-                    if(dist(currentHuman.currentPos.x, currentHuman.currentPos.x, nearestWater.x, nearestWater.y) < dist(currentHuman.currentPos.x, currentHuman.currentPos.x, currentHuman.target.x, currentHuman.target.y)){
-                        currentHuman.target = nearestWater;
+                    if(dist(currentHuman.currentPos.x, currentHuman.currentPos.x, currentHuman.target.x, currentHuman.target.y) <= 1){
+                        currentHuman.target = exploreTarget;
                     }
                 }
                 else{
-                    currentHuman.target = nearestWater;
+                    currentHuman.target = exploreTarget;
+                }
+            }
+            else{
+                //Looks Around For Water
+                Coords nearestWater = Look(currentHuman);
+
+                //Checks It Actualy Saw Water
+                if(nearestWater.x != currentHuman.currentPos.x + currentHuman.eyeSight + 5 && nearestWater.y != currentHuman.currentPos.y + currentHuman.eyeSight + 5){
+                    //Checks The Humans Target Isn't Null
+                    if(currentHuman.target != null){
+                        //Sees Which One Is Closer
+                        if(dist(currentHuman.currentPos.x, currentHuman.currentPos.x, nearestWater.x, nearestWater.y) < dist(currentHuman.currentPos.x, currentHuman.currentPos.x, currentHuman.target.x, currentHuman.target.y)){
+                            currentHuman.target = nearestWater;
+                        }
+                    }
+                    else{
+                        currentHuman.target = nearestWater;
+                    }
                 }
             }
 
@@ -155,7 +189,7 @@ void draw(){
                 }
             }
 
-            //Moves Them In A Random Direction
+            //Moves Them
             currentHuman.Move();
         }
         else{
@@ -223,8 +257,17 @@ void DrinkWater(Human currentHuman){
 
 //Creates A New Child Based Of The Mum & Dad
 void Mate(Human dad, Human mum){
+    //If The Current Human Is A Gold Digger
+    if (int(random(101)) <= goldDiggerChange) {
+        //Checks To See If They Are With A Good Enough Mate
+        if (dad.maxThirst > mum.maxThirst || dad.eyeSight > mum.eyeSight || dad.speed > mum.speed) {
+            //If They Aren't Skip The Mating Process
+            return;
+        }
+    }
+
     //Checks There Is Space To Spawn The Child (Stops 39,000 Reds Spawing In Like 100px)
-    if(CheckValidPos(dad.currentPos.x, dad.currentPos.y + 1) == true){
+    if(CheckValidPos(dad.currentPos.x, dad.currentPos.y - 1) == true){
 
         color childTribeColour;
 
@@ -236,7 +279,7 @@ void Mate(Human dad, Human mum){
         }
 
         //The Child Object
-        Human child = new Human(allHumans += 1, new Coords(dad.currentPos.x, dad.currentPos.y + 1), childTribeColour, tickCount / 4, 
+        Human child = new Human(allHumans += 1, new Coords(dad.currentPos.x, dad.currentPos.y - 1), childTribeColour, tickCount / 4, 
                                 dad.maxThirst, mum.maxThirst, dad.eyeSight, mum.eyeSight, dad.speed, mum.speed);
 
         dad.GiveBirth(tickCount);
@@ -282,8 +325,14 @@ public boolean CheckValidPos(int xPos, int yPos){
         }
     }
 
-    //Checks If It's A Valid Spawn Pixel
-    if(validPixels[xPos][yPos] == false){
+    //Checks Its Not Bigger Than The IMG Size
+    if(xPos < imgWidth && yPos < imgHeight){
+        //Checks If It's A Valid Spawn Pixel
+        if(validPixels[xPos][yPos] == false){
+            checkCount++;
+        }
+    }
+    else{
         checkCount++;
     }
 

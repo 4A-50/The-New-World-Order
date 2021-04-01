@@ -7,3 +7,6 @@ It Features Humans That Are Displayed As 2x2 Squares Which Inhabit An Inputted M
 The Humans Can Go 3 Days Without Water Which Their Main Goal Is To Find, And Can Reproduce Once They Are 2 Days Old (12 Ticks). After Reproduction They Must Wait 1/2 A Day (2 Ticks) Before They Can Mate Again.
 
 The Infomation The Simulation Collects Is Streamed Via OSC To Another Processing Sketch Which Creates A Genorative Art Peice From The Data.
+
+### Discord
+![4A50 Studios Discord](https://discordapp.com/api/guilds/657328074748198912/widget.png?style=banner2)
