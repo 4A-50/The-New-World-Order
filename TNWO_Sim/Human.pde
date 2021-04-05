@@ -71,9 +71,14 @@ public class Human{
             //Checks If There Is A X Axis Move If Not Does Y Axis
             //Needs Refining As It Is Biased To X Axis Move First And Isn't Quickest Route Just The Move Vector
             if (targetVector.x != 0) {
-                if(speed <= targetVector.x){
-                    //Checks If Its A Left Or Right Move
-                    if(targetVector.x > 0){
+                //Checks To See If It Can Reach It In One Move
+                if(speed >= targetVector.x){
+                    tempCoords.x = currentPos.x + targetVector.x;
+                    tempCoords.y = currentPos.y;
+                }
+                else{
+                    //Works Out If It's A Postive Or Negative Move
+                    if(posValue(targetVector.x) == true){
                         tempCoords.x = currentPos.x + speed;
                         tempCoords.y = currentPos.y;
                     }
@@ -82,39 +87,22 @@ public class Human{
                         tempCoords.y = currentPos.y;
                     }
                 }
-                else{
-                    //Checks If Its A Left Or Right Move
-                    if(targetVector.x > 0){
-                        tempCoords.x = currentPos.x + (targetVector.x - speed);
-                        tempCoords.y = currentPos.y;
-                    }
-                    else{
-                        tempCoords.x = currentPos.x - (targetVector.x - speed);
-                        tempCoords.y = currentPos.y;
-                    }
-                }
             }
             else{
-                if(speed <= targetVector.y){
-                    //Checks If Its A Up Or Down Move
-                    if(targetVector.y > 0){
+                //Checks To See If It Can Reach It In One Move
+                if(speed >= targetVector.y){
+                    tempCoords.x = currentPos.x;
+                    tempCoords.y = currentPos.y + targetVector.y;
+                }
+                else{
+                    //Works Out If It's A Postive Or Negative Move
+                    if(posValue(targetVector.y) == true){
                         tempCoords.x = currentPos.x;
                         tempCoords.y = currentPos.y + speed;
                     }
                     else{
                         tempCoords.x = currentPos.x;
-                        tempCoords.y = currentPos.y  - speed;
-                    }
-                }
-                else{
-                    //Checks If Its A Left Or Right Move
-                    if(targetVector.y > 0){
-                        tempCoords.x = currentPos.x;
-                        tempCoords.y = currentPos.y + (targetVector.y - speed);
-                    }
-                    else{
-                        tempCoords.x = currentPos.x;
-                        tempCoords.y = currentPos.y - (targetVector.y - speed);
+                        tempCoords.y = currentPos.y - speed;
                     }
                 }
             }
@@ -182,5 +170,14 @@ public class Human{
 
     public void Drink(){
         currentThirst = maxThirst;
+    }
+
+    boolean posValue(int val){
+        if (val >= 0) {
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

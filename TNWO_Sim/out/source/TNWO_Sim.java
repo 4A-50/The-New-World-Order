@@ -28,7 +28,7 @@ NetAddress myRemoteLocation;
 JSONArray tickArray = new JSONArray();
 
 //Time Between Ticks In Seconds
-float tickTime = 1f;
+float tickTime = 0.1f;
 
 //The Current Tick Count
 int tickCount = 0;
@@ -151,23 +151,24 @@ public void draw(){
             if(currentHuman.currentThirst >= 10) {
                 //Creates A Random Target Location For The Current Human To Explore
                 //Desinged To Allow Them To Move Away From Water Intead Of Becoming River Bank Dwellers
-                Coords exploreTarget = new Coords(PApplet.parseInt(random(currentHuman.currentPos.x - 10, currentHuman.currentPos.x + 10)),
-                                                  PApplet.parseInt(random(currentHuman.currentPos.y - 10, currentHuman.currentPos.y + 10)));
+                Coords exploreTarget = new Coords(PApplet.parseInt(random(currentHuman.currentPos.x - 5, currentHuman.currentPos.x + 5)),
+                                                  PApplet.parseInt(random(currentHuman.currentPos.y - 5, currentHuman.currentPos.y + 5)));
 
                 //Loop Limiter To Stop Infinite Searches
                 int loopLimiter = 0;
 
                 //Checks Its A Valid Position
                 while(CheckValidPos(exploreTarget.x, exploreTarget.y) != true && loopLimiter <= 16){
-                    exploreTarget = new Coords(PApplet.parseInt(random(currentHuman.currentPos.x - 10, currentHuman.currentPos.x + 10)),
-                                               PApplet.parseInt(random(currentHuman.currentPos.y - 10, currentHuman.currentPos.y + 10)));
+                    exploreTarget = new Coords(PApplet.parseInt(random(currentHuman.currentPos.x - 5, currentHuman.currentPos.x + 5)),
+                                               PApplet.parseInt(random(currentHuman.currentPos.y - 5, currentHuman.currentPos.y + 5)));
 
                     loopLimiter ++;
                 }
                 
                 //Checks The Humans Target Isn't Null
                 if(currentHuman.target != null){
-                    if(dist(currentHuman.currentPos.x, currentHuman.currentPos.x, currentHuman.target.x, currentHuman.target.y) <= 1){
+                    //Checks To See If They Are Near Their Target
+                    if(dist(currentHuman.currentPos.x, currentHuman.currentPos.y, currentHuman.target.x, currentHuman.target.y) <= 3){
                         currentHuman.target = exploreTarget;
                     }
                 }
@@ -553,9 +554,14 @@ public class Human{
             //Checks If There Is A X Axis Move If Not Does Y Axis
             //Needs Refining As It Is Biased To X Axis Move First And Isn't Quickest Route Just The Move Vector
             if (targetVector.x != 0) {
-                if(speed <= targetVector.x){
-                    //Checks If Its A Left Or Right Move
-                    if(targetVector.x > 0){
+                //Checks To See If It Can Reach It In One Move
+                if(speed >= targetVector.x){
+                    tempCoords.x = currentPos.x + targetVector.x;
+                    tempCoords.y = currentPos.y;
+                }
+                else{
+                    //Works Out If It's A Postive Or Negative Move
+                    if(posValue(targetVector.x) == true){
                         tempCoords.x = currentPos.x + speed;
                         tempCoords.y = currentPos.y;
                     }
@@ -564,39 +570,22 @@ public class Human{
                         tempCoords.y = currentPos.y;
                     }
                 }
-                else{
-                    //Checks If Its A Left Or Right Move
-                    if(targetVector.x > 0){
-                        tempCoords.x = currentPos.x + (targetVector.x - speed);
-                        tempCoords.y = currentPos.y;
-                    }
-                    else{
-                        tempCoords.x = currentPos.x - (targetVector.x - speed);
-                        tempCoords.y = currentPos.y;
-                    }
-                }
             }
             else{
-                if(speed <= targetVector.y){
-                    //Checks If Its A Up Or Down Move
-                    if(targetVector.y > 0){
+                //Checks To See If It Can Reach It In One Move
+                if(speed >= targetVector.y){
+                    tempCoords.x = currentPos.x;
+                    tempCoords.y = currentPos.y + targetVector.y;
+                }
+                else{
+                    //Works Out If It's A Postive Or Negative Move
+                    if(posValue(targetVector.y) == true){
                         tempCoords.x = currentPos.x;
                         tempCoords.y = currentPos.y + speed;
                     }
                     else{
                         tempCoords.x = currentPos.x;
-                        tempCoords.y = currentPos.y  - speed;
-                    }
-                }
-                else{
-                    //Checks If Its A Left Or Right Move
-                    if(targetVector.y > 0){
-                        tempCoords.x = currentPos.x;
-                        tempCoords.y = currentPos.y + (targetVector.y - speed);
-                    }
-                    else{
-                        tempCoords.x = currentPos.x;
-                        tempCoords.y = currentPos.y - (targetVector.y - speed);
+                        tempCoords.y = currentPos.y - speed;
                     }
                 }
             }
@@ -664,6 +653,15 @@ public class Human{
 
     public void Drink(){
         currentThirst = maxThirst;
+    }
+
+    public boolean posValue(int val){
+        if (val >= 0) {
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }
   public void settings() {  size(512, 512); }

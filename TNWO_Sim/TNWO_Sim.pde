@@ -132,23 +132,24 @@ void draw(){
             if(currentHuman.currentThirst >= 10) {
                 //Creates A Random Target Location For The Current Human To Explore
                 //Desinged To Allow Them To Move Away From Water Intead Of Becoming River Bank Dwellers
-                Coords exploreTarget = new Coords(int(random(currentHuman.currentPos.x - 10, currentHuman.currentPos.x + 10)),
-                                                  int(random(currentHuman.currentPos.y - 10, currentHuman.currentPos.y + 10)));
+                Coords exploreTarget = new Coords(int(random(currentHuman.currentPos.x - 5, currentHuman.currentPos.x + 5)),
+                                                  int(random(currentHuman.currentPos.y - 5, currentHuman.currentPos.y + 5)));
 
                 //Loop Limiter To Stop Infinite Searches
                 int loopLimiter = 0;
 
                 //Checks Its A Valid Position
                 while(CheckValidPos(exploreTarget.x, exploreTarget.y) != true && loopLimiter <= 16){
-                    exploreTarget = new Coords(int(random(currentHuman.currentPos.x - 10, currentHuman.currentPos.x + 10)),
-                                               int(random(currentHuman.currentPos.y - 10, currentHuman.currentPos.y + 10)));
+                    exploreTarget = new Coords(int(random(currentHuman.currentPos.x - 5, currentHuman.currentPos.x + 5)),
+                                               int(random(currentHuman.currentPos.y - 5, currentHuman.currentPos.y + 5)));
 
                     loopLimiter ++;
                 }
                 
                 //Checks The Humans Target Isn't Null
                 if(currentHuman.target != null){
-                    if(dist(currentHuman.currentPos.x, currentHuman.currentPos.x, currentHuman.target.x, currentHuman.target.y) <= 1){
+                    //Checks To See If They Are Near Their Target
+                    if(dist(currentHuman.currentPos.x, currentHuman.currentPos.y, currentHuman.target.x, currentHuman.target.y) <= 3){
                         currentHuman.target = exploreTarget;
                     }
                 }

@@ -133,7 +133,7 @@ public void draw(){
 				popMatrix();
 			}
 			else {
-				if (inLoopSqaureCount <= mixedSquareCount) {
+				if (inLoopSqaureCount <= purpleSquareCount + mixedSquareCount) {
 					//Sets The Outline To The Mixed Colour
 					stroke(mixRP);
 
