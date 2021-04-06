@@ -357,20 +357,33 @@ void SendOSCMessage(){
     int highestThirst = 0;
     //Adverage Thirst Value
     int advThirst = 0;
+    //Lowest Thirst Value
+    int lowestThirst = 0;
 
     //Higest Speed Value
     int highestSpeed = 0;
     //Adverage Speed Value
     int advSpeed = 0;
+    //Lowest Speed Value
+    int lowestSpeed = 0;
 
     //Oldest Human
     int highestAge = 0;
     //Adverage Age
     int advAge = 0;
+    //Youngest Human
+    int lowestAge = 0;
 
     //Gets The Info From Each Human
     for (int i = 0; i < humans.size(); ++i) {
         Human currentHuman = humans.get(i);
+
+        //If It's The First Human Set The Lowests To Them
+        if (i == 0) {
+            lowestThirst = currentHuman.maxThirst;
+            lowestSpeed = currentHuman.speed;
+            lowestAge = (tickCount / 4) - currentHuman.dateOfBirth;
+        }
 
         //Gets The Humans Colour
         if (currentHuman.tribeColour == purple) {
@@ -388,14 +401,29 @@ void SendOSCMessage(){
             highestThirst = currentHuman.maxThirst;
         }
 
+        //Checks If It's The Lowest Thirst
+        if (currentHuman.maxThirst < lowestThirst) {
+            lowestThirst = currentHuman.maxThirst;
+        }
+
         //Checks If It's The Highest Speed
         if(currentHuman.speed > highestSpeed){
             highestSpeed = currentHuman.speed;
         }
 
+        //Checks If It's The Lowest Speed
+        if (currentHuman.speed < lowestSpeed) {
+            lowestSpeed = currentHuman.speed;
+        }
+
         //Checks If It's The Oldest
         if ((tickCount / 4) - currentHuman.dateOfBirth > highestAge) {
             highestAge = (tickCount / 4) - currentHuman.dateOfBirth;
+        }
+
+        //Checks If It's The Youngest
+        if ((tickCount / 4) - currentHuman.dateOfBirth < lowestAge) {
+            lowestAge = (tickCount / 4) - currentHuman.dateOfBirth;
         }
 
         //Adds The Current Max Thirst To The Adv Calculation
@@ -419,15 +447,26 @@ void SendOSCMessage(){
 
     //Creates The Message
     OscMessage myMessage = new OscMessage("/Sim");
+
+    //Adds The Colours
     myMessage.add(purpleHumans);
     myMessage.add(redHumans);
     myMessage.add(mixedHumans);
+
+    //Adds The Thirsts
     myMessage.add(highestThirst);
     myMessage.add(advThirst);
+    myMessage.add(lowestThirst);
+
+    //Adds The Speeds
     myMessage.add(highestSpeed);
     myMessage.add(advSpeed);
+    myMessage.add(lowestSpeed);
+
+    //Adds The Ages
     myMessage.add(highestAge);
     myMessage.add(advAge);
+    myMessage.add(lowestAge);
 
     //Sends The Message
     oscP5.send(myMessage, myRemoteLocation);
@@ -437,15 +476,22 @@ void SendOSCMessage(){
 
     //Adds All The Info It Sends Over OSC
     tickInfo.setInt("tick", tickCount);
+
     tickInfo.setInt("purple humans", purpleHumans);
     tickInfo.setInt("red humans", redHumans);
     tickInfo.setInt("mixed humans", mixedHumans);
+
     tickInfo.setInt("highest thirst", highestThirst);
     tickInfo.setInt("adv thirst", advThirst);
+    tickInfo.setInt("lowest thrist", lowestThirst);
+
     tickInfo.setInt("highest speed", highestSpeed);
     tickInfo.setInt("adv speed", advSpeed);
+    tickInfo.setInt("lowest speed", lowestSpeed);
+
     tickInfo.setInt("oldest", highestAge);
     tickInfo.setInt("adv age", advAge);
+    tickInfo.setInt("youngest", lowestAge);
 
     //Adds The JSONObject To The Tick Array
     tickArray.setJSONObject(tickCount, tickInfo);

@@ -37,20 +37,26 @@ int redHumans = 0;
 //Mixed Human Count
 int mixedHumans = 0;
 
-//Highest Thirst Value
+//Highest Thirst
 int maxThirst = 0;
-//Adverage Thirst Value
+//Adverage Thirst
 int advThirst = 0;
+//Lowest Thirst
+int lowestThirst = 0;
 
 //Highest Speed
 int maxSpeed = 0;
 //Adverage Speed
 int advSpeed = 0;
+//Lowest Speed
+int lowestSpeed = 0;
 
 //Oldest Human
 int maxAge = 0;
 //Adverage Age
 int advAge = 0;
+//Lowest Age
+int lowestAge = 0;
 
 void setup(){
 	size(800, 800);
@@ -86,13 +92,13 @@ void draw(){
 		for (int x = xMinBound + (spacingSize / 2); x < xMaxBound; x += squareSize + spacingSize) {
 
 			//Rotation For Purple Squares
-			float purpleRotate = (maxSpeed - advSpeed) + inLoopSqaureCount;
+			float purpleRotate = (maxSpeed - lowestSpeed) + inLoopSqaureCount;
 
 			//Rotation For Red Squares
-			float redRotate = (maxThirst - advThirst) + inLoopSqaureCount;
+			float redRotate = (maxThirst - lowestThirst) + inLoopSqaureCount;
 
 			//Rotation For Mixed Squares
-			float mixedRotate = (maxAge - advAge) + inLoopSqaureCount;
+			float mixedRotate = (maxAge - lowestAge) + inLoopSqaureCount;
 
 			//Checks Whether It Is A Purple Or Red Square
 			if (inLoopSqaureCount <= purpleSquareCount) {
@@ -176,16 +182,22 @@ void oscEvent(OscMessage theOscMessage){
 	maxThirst = theOscMessage.get(3).intValue();
 	//Gets The Adverage Thirst Value
 	advThirst = theOscMessage.get(4).intValue();
+	//Gets The Lowest Thirst Value
+	lowestThirst = theOscMessage.get(5).intValue();
 
 	//Gets The Highest Speed
-	maxSpeed = theOscMessage.get(5).intValue();
+	maxSpeed = theOscMessage.get(6).intValue();
 	//Gets The Adverage Speed
-	advSpeed = theOscMessage.get(6).intValue();
+	advSpeed = theOscMessage.get(7).intValue();
+	//Gets The Lowest Speed
+	lowestSpeed = theOscMessage.get(8).intValue();
 
 	//Gets The Oldest
-	maxAge = theOscMessage.get(7).intValue();
+	maxAge = theOscMessage.get(9).intValue();
 	//Gets The Adverage Age
-	advAge = theOscMessage.get(8).intValue();
+	advAge = theOscMessage.get(10).intValue();
+	//Gets The Youngest
+	lowestAge = theOscMessage.get(11).intValue();
 }
 
 void CreateSafeArea(){
