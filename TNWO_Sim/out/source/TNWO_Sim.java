@@ -28,7 +28,7 @@ NetAddress myRemoteLocation;
 JSONArray tickArray = new JSONArray();
 
 //Time Between Ticks In Seconds
-float tickTime = 0.1f;
+float tickTime = 1f;
 
 //The Current Tick Count
 int tickCount = 0;
@@ -73,7 +73,10 @@ int minMateTime = 2;
 int mutationChance = 10;
 
 //Gold Digger Chance
-int goldDiggerChange = 15;
+int goldDiggerChance = 15;
+
+//Explore Chance
+int exploreChance = 25;
 
 public void setup(){
     
@@ -147,8 +150,8 @@ public void draw(){
 
         //Checks If The Human Is Dehydrated Or Not
         if(currentHuman.currentThirst != 0){
-            //Checks If They Can Go A Few Days Before Water
-            if(currentHuman.currentThirst >= 10) {
+            //Checks If They Can Go A Few Days Before Water And If They Randomly Pick To Explore
+            if(currentHuman.currentThirst >= 10 && PApplet.parseInt(random(101)) <= exploreChance) {
                 //Creates A Random Target Location For The Current Human To Explore
                 //Desinged To Allow Them To Move Away From Water Intead Of Becoming River Bank Dwellers
                 Coords exploreTarget = new Coords(PApplet.parseInt(random(currentHuman.currentPos.x - 5, currentHuman.currentPos.x + 5)),
@@ -278,7 +281,7 @@ public void DrinkWater(Human currentHuman){
 //Creates A New Child Based Of The Mum & Dad
 public void Mate(Human dad, Human mum){
     //If The Current Human Is A Gold Digger
-    if (PApplet.parseInt(random(101)) <= goldDiggerChange) {
+    if (PApplet.parseInt(random(101)) <= goldDiggerChance) {
         //Checks To See If They Are With A Good Enough Mate
         if (dad.maxThirst > mum.maxThirst || dad.eyeSight > mum.eyeSight || dad.speed > mum.speed) {
             //If They Aren't Skip The Mating Process
