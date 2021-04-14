@@ -28,7 +28,7 @@ NetAddress myRemoteLocation;
 JSONArray tickArray = new JSONArray();
 
 //Time Between Ticks In Seconds
-float tickTime = 1f;
+float tickTime = 0.1f;
 
 //The Current Tick Count
 int tickCount = 0;
@@ -470,6 +470,9 @@ public void SendOSCMessage(){
     //Creates The Message
     OscMessage myMessage = new OscMessage("/Sim");
 
+    //Adds The Tick
+    myMessage.add(tickCount);
+
     //Adds The Colours
     myMessage.add(purpleHumans);
     myMessage.add(redHumans);
@@ -478,17 +481,14 @@ public void SendOSCMessage(){
     //Adds The Thirsts
     myMessage.add(highestThirst);
     myMessage.add(advThirst);
-    myMessage.add(lowestThirst);
 
     //Adds The Speeds
     myMessage.add(highestSpeed);
     myMessage.add(advSpeed);
-    myMessage.add(lowestSpeed);
 
     //Adds The Ages
     myMessage.add(highestAge);
     myMessage.add(advAge);
-    myMessage.add(lowestAge);
 
     //Sends The Message
     oscP5.send(myMessage, myRemoteLocation);
@@ -505,7 +505,7 @@ public void SendOSCMessage(){
 
     tickInfo.setInt("highest thirst", highestThirst);
     tickInfo.setInt("adv thirst", advThirst);
-    tickInfo.setInt("lowest thrist", lowestThirst);
+    tickInfo.setInt("lowest thirst", lowestThirst);
 
     tickInfo.setInt("highest speed", highestSpeed);
     tickInfo.setInt("adv speed", advSpeed);

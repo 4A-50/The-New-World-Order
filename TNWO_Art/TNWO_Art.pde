@@ -12,9 +12,6 @@ color mixRP = color(199,21,133); //Redy Purple
 color blue = color(91, 208, 242); //Blue
 color green = color(152, 255, 138); //Green
 
-//Jitter Value
-int jitterValue = 5;
-
 //Bounds
 int xMinBound;
 int xMaxBound;
@@ -30,6 +27,9 @@ int squareSize = 50;
 //Spacing Size
 int spacingSize = 25;
 
+//Current Tick
+int currentTick = 0;
+
 //Purple Human Count
 int purpleHumans = 0;
 //Red Human Count
@@ -37,191 +37,199 @@ int redHumans = 0;
 //Mixed Human Count
 int mixedHumans = 0;
 
+//The Last Ticks Purples
+int lastPurple = 0;
+//The Last Ticks Reds
+int lastRed = 0;
+//The Last Ticks Mixed
+int lastMixed = 0;
+
 //Highest Thirst
 int maxThirst = 0;
 //Adverage Thirst
 int advThirst = 0;
-//Lowest Thirst
-int lowestThirst = 0;
 
 //Highest Speed
 int maxSpeed = 0;
 //Adverage Speed
 int advSpeed = 0;
-//Lowest Speed
-int lowestSpeed = 0;
 
 //Oldest Human
 int maxAge = 0;
 //Adverage Age
 int advAge = 0;
-//Lowest Age
-int lowestAge = 0;
+
+//Runs The Draw Func
+boolean drawNow = false;
+
+//PVectors Of The Lines
+PVector blueLine, greenLine, redLine, purpleLine;
 
 void setup(){
 	size(800, 800);
-	//fullScreen();
-	frameRate(10);
 	
   	noFill();
-
-	//Works Out The Safe Area And Count For Squares
-	CreateSafeArea();
 
 	//Starts An OSC Reciver On Local IP With Port 12000
 	oscP5 = new OscP5(this, 12000);
 	myRemoteLocation = new NetAddress("127.0.0.1", 12000);
 
-	//Creates A Gradient Background
-	setGradient(0, 0, width, height, blue, green);
+	//Creates A Black Background
+	background(0);
+
+	//Works Out The Center Of The Screen
+	PVector center = new PVector(width / 2, height / 2);
+
+	//Starts All The Lines In The Center Of The Screen
+	blueLine = new PVector(center.x, center.y);
+	greenLine = new PVector(center.x, center.y);
+	redLine = new PVector(center.x, center.y);
+	purpleLine = new PVector(center.x, center.y);
 }
 
 void draw(){
-	//Creates A Gradient Background
-	setGradient(0, 0, width, height, blue, green);
+	//Runs The Draw Loop If It's Recived A New OSC Msg
+	if(drawNow == true){
+		//Blue Colour
+		stroke(blue);
 
-	//Works Out Which Squares Should Be What Color
-	int purpleSquareCount = int(map(purpleHumans, 0, purpleHumans + redHumans + mixedHumans, 0, squareCount));
-	int mixedSquareCount = int(map(mixedHumans, 0, purpleHumans + redHumans + mixedHumans, 0, squareCount));
+		//Creates A Random Angle
+		int blueAngle = int(random(360));
+		//Works Out The Move Size
+		int blueRadius = maxThirst - advThirst;
 
-	//Used To Know How Many Squares Have Been Drawn
-	int inLoopSqaureCount = 1;
+		//Creates A New Move Postion
+		PVector newBlue = new PVector(BoundsCheck(int(blueLine.x + (cos(radians(blueAngle)) * blueRadius)), 0), 
+									  BoundsCheck(int(blueLine.y + (sin(radians(blueAngle)) * blueRadius)), 1));
+							
+		//Draws The Lines Between The Current Pos and New One
+		line(blueLine.x, blueLine.y, newBlue.x, newBlue.y);
 
-	//Loops Through All The Squares
-	for (int y = yMinBound + (spacingSize / 2); y < yMaxBound; y += squareSize + spacingSize) {
-		for (int x = xMinBound + (spacingSize / 2); x < xMaxBound; x += squareSize + spacingSize) {
+		//Updates The Current Pos
+		blueLine = newBlue;
+		
 
-			//Rotation For Purple Squares
-			float purpleRotate = (maxSpeed - lowestSpeed) + inLoopSqaureCount;
+		//Green Colour
+		stroke(green);
 
-			//Rotation For Red Squares
-			float redRotate = (maxThirst - lowestThirst) + inLoopSqaureCount;
+		//Creates A Random Angle
+		int greenAngle = int(random(360));
+		//Works Out The Move Size
+		int greenRadius = maxSpeed - advSpeed;
 
-			//Rotation For Mixed Squares
-			float mixedRotate = (maxAge - lowestAge) + inLoopSqaureCount;
+		//Creates A New Move Position
+		PVector newGreen = new PVector(BoundsCheck(int(greenLine.x + (cos(radians(greenAngle)) * greenRadius)), 0), 
+									   BoundsCheck(int(greenLine.y + (sin(radians(greenAngle)) * greenRadius)), 1));
 
-			//Checks Whether It Is A Purple Or Red Square
-			if (inLoopSqaureCount <= purpleSquareCount) {
-				//Sets The Outline To Purple
-				stroke(purple);
+		//Draws The Lines Between The Current Pos and New One
+		line(greenLine.x, greenLine.y, newGreen.x, newGreen.y);
 
-				//Creates A New PushPop Matrix Allowing Translations To Only Effect This Square
-				pushMatrix();
-					//Moves The Start Pos (0,0) To This Location
-					translate(x + (squareSize / 2), y + (squareSize / 2));
+		//Updates The Current Pos
+		greenLine = newGreen;
 
-					//Creates A New Rotation Angle To Apply To Anything After It
-					rotate(radians(purpleRotate + Jitter()));
 
-					//Draws The Rectangle With The Rotation At The Translated Pos
-					rect(-(squareSize / 2), -(squareSize / 2), squareSize, squareSize);
+		//Purple Colour
+		stroke(purple);
 
-				//Pops The Matrix
-				popMatrix();
-			}
-			else {
-				if (inLoopSqaureCount <= purpleSquareCount + mixedSquareCount) {
-					//Sets The Outline To The Mixed Colour
-					stroke(mixRP);
+		//Creates A Random Angle
+		int purpleAngle = int(random(360));
+		//Works Out The Move Size
+		int purpleRadius = lastPurple - purpleHumans;
 
-					//Creates A New PushPop Matrix Allowing Translations To Only Effect This Square
-					pushMatrix();
-						//Moves The Start Pos (0,0) To This Location
-						translate(x + (squareSize / 2), y + (squareSize / 2));
+		//Creates A New Move Position
+		PVector newPurple = new PVector(BoundsCheck(int(purpleLine.x + (cos(radians(purpleAngle)) * purpleRadius)), 0), 
+									    BoundsCheck(int(purpleLine.y + (sin(radians(purpleAngle)) * purpleRadius)), 1));
 
-						//Creates A New Rotation Angle To Apply To Anything After It
-						rotate(radians(mixedRotate + Jitter()));
+		//Draws The 
+		line(purpleLine.x, purpleLine.y, newPurple.x, newPurple.y);
 
-						//Draws The Rectangle With The Rotation At The Translated Pos
-						rect(-(squareSize / 2), -(squareSize / 2), squareSize, squareSize);
+		//Updates The Current Pos
+		purpleLine = newPurple;
 
-					//Pops The Matrix
-					popMatrix();
-				}
-				else{
-					//Sets The Outline To Red
-					stroke(red);
 
-					//Creates A New PushPop Matrix Allowing Translations To Only Effect This Square
-					pushMatrix();
-						//Moves The Start Pos (0,0) To This Location
-						translate(x + (squareSize / 2), y + (squareSize / 2));
+		//Red Colour
+		stroke(red);
 
-						//Creates A New Rotation Angle To Apply To Anything After It
-						rotate(radians(redRotate + Jitter()));
+		//Creates A Random Angle
+		int redAngle = int(random(360));
+		//Works Out The Move Size
+		int redRadius = lastRed - redHumans;
 
-						//Draws The Rectangle With The Rotation At The Translated Pos
-						rect(-(squareSize / 2), -(squareSize / 2), squareSize, squareSize);
-						
-					//Pops The Matrix
-					popMatrix();
-				}
-			}
+		//Creates A New Move Position
+		PVector newRed = new PVector(BoundsCheck(int(redLine.x + (cos(radians(redAngle)) * redRadius)), 0), 
+									 BoundsCheck(int(redLine.y + (sin(radians(redAngle)) * redRadius)), 1));
 
-			//Increments The Squares Drawn Counter
-			inLoopSqaureCount++;
-		}
+		//Draws The 
+		line(redLine.x, redLine.y, newRed.x, newRed.y);
+
+		//Updates The Current Pos
+		redLine = newRed;
+
+
+		//Updates The Last Ticks Info
+		lastPurple = purpleHumans;
+		lastRed = redHumans;
+		lastMixed = mixedHumans;
+
+		//Stops The Draw Func From Running Till The Next OSC Msg
+		drawNow = false;
 	}
 }
 
-//Creates A Randome "Jitter" Value From The Range In The Global Var
-int Jitter(){
-	return int(random(-jitterValue, jitterValue));
+//Checks The New Pos Fits On The Screen If It Doesn't It Moves It Across The Screen
+int BoundsCheck(int loc, int axis){
+    if(axis == 0){
+        if (loc < 0) {
+            noStroke();
+            return width;
+        }
+
+        if (loc > width){
+            noStroke();
+            return 0;
+        }
+    }
+    else{
+        if (loc < 0) {
+            noStroke();
+            return height;
+        }
+
+        if (loc > height){
+            noStroke();
+            return 0;
+        }
+    }
+
+    return loc;
 }
 
 //Runs When An OCS Message Is Recived
 void oscEvent(OscMessage theOscMessage){
+	//Gets The Curent Tick
+	currentTick = theOscMessage.get(0).intValue();
+
 	//Gets The Purple Human Count
-	purpleHumans = theOscMessage.get(0).intValue();
+	purpleHumans = theOscMessage.get(1).intValue();
 	//Gets The Red Human Count
-	redHumans = theOscMessage.get(1).intValue();
+	redHumans = theOscMessage.get(2).intValue();
 	//Gets The Mixed Human Count
-	mixedHumans = theOscMessage.get(2).intValue();
+	mixedHumans = theOscMessage.get(3).intValue();
 
 	//Gets The Highest Thirst Value
-	maxThirst = theOscMessage.get(3).intValue();
+	maxThirst = theOscMessage.get(4).intValue();
 	//Gets The Adverage Thirst Value
-	advThirst = theOscMessage.get(4).intValue();
-	//Gets The Lowest Thirst Value
-	lowestThirst = theOscMessage.get(5).intValue();
+	advThirst = theOscMessage.get(5).intValue();
 
 	//Gets The Highest Speed
 	maxSpeed = theOscMessage.get(6).intValue();
 	//Gets The Adverage Speed
 	advSpeed = theOscMessage.get(7).intValue();
-	//Gets The Lowest Speed
-	lowestSpeed = theOscMessage.get(8).intValue();
 
 	//Gets The Oldest
-	maxAge = theOscMessage.get(9).intValue();
+	maxAge = theOscMessage.get(8).intValue();
 	//Gets The Adverage Age
-	advAge = theOscMessage.get(10).intValue();
-	//Gets The Youngest
-	lowestAge = theOscMessage.get(11).intValue();
-}
+	advAge = theOscMessage.get(9).intValue();
 
-void CreateSafeArea(){
-	xMinBound = width / 8;
-	xMaxBound = (width / 8) * 7;
-	yMinBound = height / 8;
-	yMaxBound = (height / 8) * 7;
-
-	for (int y = yMinBound + (spacingSize / 2); y < yMaxBound; y += squareSize + spacingSize) {
-		for (int x = xMinBound + (spacingSize / 2); x < xMaxBound; x += squareSize + spacingSize) {
-			squareCount++;
-		}
-	}
-}
-
-void setGradient(int x, int y, float w, float h, color c1, color c2) {
-	strokeWeight(1);
-
-  	for (int i = y; i <= y+h; i++) {
-		float inter = map(i, y, y+h, 0, 1);
-		color c = lerpColor(c1, c2, inter);
-		stroke(c);
-		line(x, i, x+w, i);
-    }
-
-	strokeWeight(5);
+	drawNow = true;
 }
