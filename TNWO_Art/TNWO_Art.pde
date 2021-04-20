@@ -5,6 +5,15 @@ import netP5.*;
 OscP5 oscP5;
 NetAddress myRemoteLocation;
 
+//Run Type
+RunTypes runType = RunTypes.Fadeout;
+
+//Mutiplier For The Lines
+int mutiplier = 10;
+
+//The Time Before Lines Dissapear
+int shrinkVal = 50;
+
 //Colours
 color purple = color(136, 3, 252); //Purple
 color red = color(255, 0, 0); //Red
@@ -62,13 +71,14 @@ int advAge = 0;
 //Runs The Draw Func
 boolean drawNow = false;
 
+//ArrayList Of All The Lines
+ArrayList<Line> lines = new ArrayList<Line>();
+
 //PVectors Of The Lines
 PVector blueLine, greenLine, redLine, purpleLine;
 
 void setup(){
 	size(800, 800);
-	
-  	noFill();
 
 	//Starts An OSC Reciver On Local IP With Port 12000
 	oscP5 = new OscP5(this, 12000);
@@ -90,80 +100,144 @@ void setup(){
 void draw(){
 	//Runs The Draw Loop If It's Recived A New OSC Msg
 	if(drawNow == true){
-		//Blue Colour
-		stroke(blue);
+		//Clears The Screen
+		background(0);
 
 		//Creates A Random Angle
 		int blueAngle = int(random(360));
 		//Works Out The Move Size
-		int blueRadius = maxThirst - advThirst;
+		int blueRadius = maxThirst - advThirst + mutiplier;
 
 		//Creates A New Move Postion
 		PVector newBlue = new PVector(BoundsCheck(int(blueLine.x + (cos(radians(blueAngle)) * blueRadius)), 0), 
 									  BoundsCheck(int(blueLine.y + (sin(radians(blueAngle)) * blueRadius)), 1));
 							
-		//Draws The Lines Between The Current Pos and New One
-		line(blueLine.x, blueLine.y, newBlue.x, newBlue.y);
+		//Creates The New Blue Line
+		lines.add(new Line(blueLine, newBlue, blue, currentTick));
 
 		//Updates The Current Pos
 		blueLine = newBlue;
-		
 
-		//Green Colour
-		stroke(green);
 
 		//Creates A Random Angle
 		int greenAngle = int(random(360));
 		//Works Out The Move Size
-		int greenRadius = maxSpeed - advSpeed;
+		int greenRadius = maxSpeed - advSpeed + mutiplier;
 
 		//Creates A New Move Position
 		PVector newGreen = new PVector(BoundsCheck(int(greenLine.x + (cos(radians(greenAngle)) * greenRadius)), 0), 
 									   BoundsCheck(int(greenLine.y + (sin(radians(greenAngle)) * greenRadius)), 1));
 
-		//Draws The Lines Between The Current Pos and New One
-		line(greenLine.x, greenLine.y, newGreen.x, newGreen.y);
+		//Creates The New Blue Line
+		lines.add(new Line(greenLine, newGreen, green, currentTick));
 
 		//Updates The Current Pos
 		greenLine = newGreen;
 
 
-		//Purple Colour
-		stroke(purple);
-
 		//Creates A Random Angle
 		int purpleAngle = int(random(360));
 		//Works Out The Move Size
-		int purpleRadius = lastPurple - purpleHumans;
+		int purpleRadius = int(map(purpleHumans, 0, purpleHumans + redHumans, 0, blueRadius)) + mutiplier;
 
 		//Creates A New Move Position
 		PVector newPurple = new PVector(BoundsCheck(int(purpleLine.x + (cos(radians(purpleAngle)) * purpleRadius)), 0), 
 									    BoundsCheck(int(purpleLine.y + (sin(radians(purpleAngle)) * purpleRadius)), 1));
 
-		//Draws The 
-		line(purpleLine.x, purpleLine.y, newPurple.x, newPurple.y);
+		//Creates The New Blue Line
+		lines.add(new Line(purpleLine, newPurple, purple, currentTick));
 
 		//Updates The Current Pos
 		purpleLine = newPurple;
 
 
-		//Red Colour
-		stroke(red);
-
 		//Creates A Random Angle
 		int redAngle = int(random(360));
 		//Works Out The Move Size
-		int redRadius = lastRed - redHumans;
+		int redRadius = int(map(redHumans, 0, purpleHumans + redHumans, 0, greenRadius)) + mutiplier;
 
 		//Creates A New Move Position
 		PVector newRed = new PVector(BoundsCheck(int(redLine.x + (cos(radians(redAngle)) * redRadius)), 0), 
 									 BoundsCheck(int(redLine.y + (sin(radians(redAngle)) * redRadius)), 1));
 
-		//Draws The 
-		line(redLine.x, redLine.y, newRed.x, newRed.y);
+		//Creates The New Blue Line
+		lines.add(new Line(redLine, newRed, red, currentTick));
 
 		//Updates The Current Pos
 		redLine = newRed;
+
+		switch (runType) {
+			case Forever:
+				//Loops Through All The Lines In The Array List
+				for (Line l : lines) {
+					//Sets The Line Colour
+					stroke(l.colour);
+
+					//Draws The Line
+					line(l.startPos.x, l.startPos.y, l.endPos.x, l.endPos.y);
+				}
+				break;
+			
+			case Fadeout:
+				//Loops Through All The Lines In The Array List
+				//Backwards To Remove Old Lines Correctly
+				for (int i = lines.size() - 1; i >= 0 ; i--) {
+					//Current Line
+					Line l = lines.get(i);
+
+					//Removes Lines That Are Too Old
+					if(currentTick - l.dob > shrinkVal){
+						lines.remove(i);
+					}
+
+					//Sets The Line Colour
+					stroke(l.colour, map(currentTick - l.dob, 0, shrinkVal, 255, 0));
+
+					//Draws The Line
+					line(l.startPos.x, l.startPos.y, l.endPos.x, l.endPos.y);
+				}
+				break;
+
+			case Shrink:
+				//Loops Through All The Lines In The Array List
+				//Backwards To Remove Old Lines Correctly
+				for (int i = lines.size() - 1; i >= 0 ; i--) {
+					//Current Line
+					Line l = lines.get(i);
+
+					//Removes Lines That Are Too Old
+					if(currentTick - l.dob > shrinkVal){
+						lines.remove(i);
+					}
+
+					//Sets The Line Colour
+					stroke(l.colour);
+
+					//Draws The Line
+					line(l.startPos.x, l.startPos.y, l.endPos.x, l.endPos.y);
+				}
+				break;
+
+			case Fadein:
+				//Loops Through All The Lines In The Array List
+				//Backwards To Remove Old Lines Correctly
+				for (int i = lines.size() - 1; i >= 0 ; i--) {
+					//Current Line
+					Line l = lines.get(i);
+
+					//Removes Lines That Are Too Old
+					if(currentTick - l.dob > shrinkVal){
+						lines.remove(i);
+					}
+
+					//Sets The Line Colour
+					stroke(l.colour, map(currentTick - l.dob, 0, shrinkVal, 0, 255));
+
+					//Draws The Line
+					line(l.startPos.x, l.startPos.y, l.endPos.x, l.endPos.y);
+				}
+				break;
+		}
 
 
 		//Updates The Last Ticks Info
@@ -232,4 +306,8 @@ void oscEvent(OscMessage theOscMessage){
 	advAge = theOscMessage.get(9).intValue();
 
 	drawNow = true;
+}
+
+public enum RunTypes{
+	Forever, Fadeout, Shrink, Fadein;
 }

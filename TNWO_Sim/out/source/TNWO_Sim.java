@@ -139,6 +139,13 @@ public void draw(){
     text("Tick: " + tickCount, 5, 15);
     text("Day: " + tickCount / 4, 5, 30);
 
+
+    //Increases The The Time Between Mates On Tick 100
+    if(tickCount % 100 == 0 && tickCount > 0 && tickCount <= 100){
+        minMateTime += 2;
+    }
+
+
     //Loops Thorugh All Humans To Perform Tick Actions
     //Loops Backwards (Final Item -> First Item) For Clean And Easy Killings
     for (int i = humans.size() - 1; i >= 0 ; i--) {
