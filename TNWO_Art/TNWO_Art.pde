@@ -6,7 +6,7 @@ OscP5 oscP5;
 NetAddress myRemoteLocation;
 
 //Run Type
-RunTypes runType = RunTypes.Fadeout;
+RunTypes runType = RunTypes.Forever;
 
 //Mutiplier For The Lines
 int mutiplier = 10;
@@ -109,14 +109,14 @@ void draw(){
 		int blueRadius = maxThirst - advThirst + mutiplier;
 
 		//Creates A New Move Postion
-		PVector newBlue = new PVector(BoundsCheck(int(blueLine.x + (cos(radians(blueAngle)) * blueRadius)), 0), 
-									  BoundsCheck(int(blueLine.y + (sin(radians(blueAngle)) * blueRadius)), 1));
+		PVector newBlue = new PVector(BoundsLimit(int(blueLine.x + (cos(radians(blueAngle)) * blueRadius)), 0), 
+									  BoundsLimit(int(blueLine.y + (sin(radians(blueAngle)) * blueRadius)), 1));
 							
 		//Creates The New Blue Line
 		lines.add(new Line(blueLine, newBlue, blue, currentTick));
 
 		//Updates The Current Pos
-		blueLine = newBlue;
+		blueLine = new PVector(BoundsOverflow(newBlue.x, 0), BoundsOverflow(newBlue.y, 1));
 
 
 		//Creates A Random Angle
@@ -125,14 +125,14 @@ void draw(){
 		int greenRadius = maxSpeed - advSpeed + mutiplier;
 
 		//Creates A New Move Position
-		PVector newGreen = new PVector(BoundsCheck(int(greenLine.x + (cos(radians(greenAngle)) * greenRadius)), 0), 
-									   BoundsCheck(int(greenLine.y + (sin(radians(greenAngle)) * greenRadius)), 1));
+		PVector newGreen = new PVector(BoundsLimit(int(greenLine.x + (cos(radians(greenAngle)) * greenRadius)), 0), 
+									   BoundsLimit(int(greenLine.y + (sin(radians(greenAngle)) * greenRadius)), 1));
 
 		//Creates The New Blue Line
 		lines.add(new Line(greenLine, newGreen, green, currentTick));
 
 		//Updates The Current Pos
-		greenLine = newGreen;
+		greenLine = new PVector(BoundsOverflow(newGreen.x, 0), BoundsOverflow(newGreen.y, 1));
 
 
 		//Creates A Random Angle
@@ -141,14 +141,14 @@ void draw(){
 		int purpleRadius = int(map(purpleHumans, 0, purpleHumans + redHumans, 0, blueRadius)) + mutiplier;
 
 		//Creates A New Move Position
-		PVector newPurple = new PVector(BoundsCheck(int(purpleLine.x + (cos(radians(purpleAngle)) * purpleRadius)), 0), 
-									    BoundsCheck(int(purpleLine.y + (sin(radians(purpleAngle)) * purpleRadius)), 1));
+		PVector newPurple = new PVector(BoundsLimit(int(purpleLine.x + (cos(radians(purpleAngle)) * purpleRadius)), 0), 
+									    BoundsLimit(int(purpleLine.y + (sin(radians(purpleAngle)) * purpleRadius)), 1));
 
 		//Creates The New Blue Line
 		lines.add(new Line(purpleLine, newPurple, purple, currentTick));
 
 		//Updates The Current Pos
-		purpleLine = newPurple;
+		purpleLine = new PVector(BoundsOverflow(newPurple.x, 0), BoundsOverflow(newPurple.y, 1));
 
 
 		//Creates A Random Angle
@@ -157,15 +157,17 @@ void draw(){
 		int redRadius = int(map(redHumans, 0, purpleHumans + redHumans, 0, greenRadius)) + mutiplier;
 
 		//Creates A New Move Position
-		PVector newRed = new PVector(BoundsCheck(int(redLine.x + (cos(radians(redAngle)) * redRadius)), 0), 
-									 BoundsCheck(int(redLine.y + (sin(radians(redAngle)) * redRadius)), 1));
+		PVector newRed = new PVector(BoundsLimit(int(redLine.x + (cos(radians(redAngle)) * redRadius)), 0), 
+									 BoundsLimit(int(redLine.y + (sin(radians(redAngle)) * redRadius)), 1));
 
 		//Creates The New Blue Line
 		lines.add(new Line(redLine, newRed, red, currentTick));
 
 		//Updates The Current Pos
-		redLine = newRed;
+		redLine = new PVector(BoundsOverflow(newRed.x, 0), BoundsOverflow(newRed.y, 1));
 
+
+		//Works Out What Run Type The Sketch Is In
 		switch (runType) {
 			case Forever:
 				//Loops Through All The Lines In The Array List
@@ -250,27 +252,66 @@ void draw(){
 	}
 }
 
-//Checks The New Pos Fits On The Screen If It Doesn't It Moves It Across The Screen
-int BoundsCheck(int loc, int axis){
+//Runs If Any Keyboard Input Is Detected
+void keyPressed() {
+	if (key == '1') {
+		runType = RunTypes.Forever;
+	}
+
+	if (key == '2') {
+		runType = RunTypes.Fadeout;
+	}
+
+	if (key == '3') {
+		runType = RunTypes.Shrink;
+	}
+
+	if (key == '4') {
+		runType = RunTypes.Fadein;
+	}
+}
+
+//If The New Pos Is Off The Screen Limit It Onto The Screen
+int BoundsLimit(int loc, int axis){
     if(axis == 0){
         if (loc < 0) {
-            noStroke();
-            return width;
+            return 0;
         }
 
         if (loc > width){
-            noStroke();
-            return 0;
+            return width;
         }
     }
     else{
         if (loc < 0) {
-            noStroke();
-            return height;
+            return 0;
         }
 
         if (loc > height){
-            noStroke();
+            return height;
+        }
+    }
+
+    return loc;
+}
+
+//After The Lines Been Drawn If It Went To The Edge Move To The Oppsoite Side For The Next Line
+float BoundsOverflow(float loc, int axis){
+    if(axis == 0){
+        if (loc == 0) {
+            return width;
+        }
+
+        if (loc == width){
+            return 0;
+        }
+    }
+    else{
+        if (loc == 0) {
+            return height;
+        }
+
+        if (loc == height){
             return 0;
         }
     }
