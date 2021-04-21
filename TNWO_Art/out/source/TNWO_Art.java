@@ -17,13 +17,7 @@ import java.io.IOException;
 
 public class TNWO_Art extends PApplet {
 
-
-
-
-//OSC Info For Data Reciver
-OscP5 oscP5;
-NetAddress myRemoteLocation;
-
+//----------Modifiers----------
 //Run Type
 RunTypes runType = RunTypes.Forever;
 
@@ -32,6 +26,14 @@ int mutiplier = 10;
 
 //The Time Before Lines Dissapear
 int shrinkVal = 50;
+//-----------------------------
+
+
+
+
+//OSC Info For Data Reciver
+OscP5 oscP5;
+NetAddress myRemoteLocation;
 
 //Colours
 int purple = color(136, 3, 252); //Purple
@@ -39,21 +41,6 @@ int red = color(255, 0, 0); //Red
 int mixRP = color(199,21,133); //Redy Purple
 int blue = color(91, 208, 242); //Blue
 int green = color(152, 255, 138); //Green
-
-//Bounds
-int xMinBound;
-int xMaxBound;
-int yMinBound;
-int yMaxBound;
-
-//Square Count
-int squareCount;
-
-//Square Size
-int squareSize = 50;
-
-//Spacing Size
-int spacingSize = 25;
 
 //Current Tick
 int currentTick = 0;
@@ -288,6 +275,11 @@ public void keyPressed() {
 	if (key == '4') {
 		runType = RunTypes.Fadein;
 	}
+
+	//Takes A Screen Shot Of The Sketch
+	if (key == 'p'){
+		saveFrame("TheNewWorldOrder-" + frameCount + ".png");
+	}
 }
 
 //If The New Pos Is Off The Screen Limit It Onto The Screen
@@ -314,6 +306,7 @@ public int BoundsLimit(int loc, int axis){
     return loc;
 }
 
+//After The Lines Been Drawn If It Went To The Edge Move To The Oppsoite Side For The Next Line
 public float BoundsOverflow(float loc, int axis){
     if(axis == 0){
         if (loc == 0) {

@@ -1,10 +1,4 @@
-import oscP5.*;
-import netP5.*;
-
-//OSC Info For Data Reciver
-OscP5 oscP5;
-NetAddress myRemoteLocation;
-
+//----------Modifiers----------
 //Run Type
 RunTypes runType = RunTypes.Forever;
 
@@ -13,6 +7,14 @@ int mutiplier = 10;
 
 //The Time Before Lines Dissapear
 int shrinkVal = 50;
+//-----------------------------
+
+import oscP5.*;
+import netP5.*;
+
+//OSC Info For Data Reciver
+OscP5 oscP5;
+NetAddress myRemoteLocation;
 
 //Colours
 color purple = color(136, 3, 252); //Purple
@@ -20,21 +22,6 @@ color red = color(255, 0, 0); //Red
 color mixRP = color(199,21,133); //Redy Purple
 color blue = color(91, 208, 242); //Blue
 color green = color(152, 255, 138); //Green
-
-//Bounds
-int xMinBound;
-int xMaxBound;
-int yMinBound;
-int yMaxBound;
-
-//Square Count
-int squareCount;
-
-//Square Size
-int squareSize = 50;
-
-//Spacing Size
-int spacingSize = 25;
 
 //Current Tick
 int currentTick = 0;
@@ -268,6 +255,11 @@ void keyPressed() {
 
 	if (key == '4') {
 		runType = RunTypes.Fadein;
+	}
+
+	//Takes A Screen Shot Of The Sketch
+	if (key == 'p'){
+		saveFrame("Art-" + frameCount + ".png");
 	}
 }
 

@@ -1,3 +1,17 @@
+//----------Modifiers----------
+//Time Between Ticks In Seconds
+float tickTime = 0.1f;
+
+//Mutation Chance
+int mutationChance = 10;
+
+//Gold Digger Chance
+int goldDiggerChance = 15;
+
+//Explore Chance
+int exploreChance = 25;
+//-----------------------------
+
 import oscP5.*;
 import netP5.*;
 
@@ -7,9 +21,6 @@ NetAddress myRemoteLocation;
 
 //Used To Save Simulation Data To A JSON File
 JSONArray tickArray = new JSONArray();
-
-//Time Between Ticks In Seconds
-float tickTime = 0.1f;
 
 //The Current Tick Count
 int tickCount = 0;
@@ -49,15 +60,6 @@ int allHumans = 0;
 
 //Min Time Between Mates
 int minMateTime = 2;
-
-//Mutation Chance
-int mutationChance = 10;
-
-//Gold Digger Chance
-int goldDiggerChance = 15;
-
-//Explore Chance
-int exploreChance = 25;
 
 void setup(){
     size(512, 512);
@@ -352,6 +354,14 @@ public boolean CheckValidPos(int xPos, int yPos){
     }else{
         return false;
     }
+}
+
+//Runs If Any Keyboard Input Is Detected
+void keyPressed() {
+	//Takes A Screen Shot Of The Sketch
+	if (key == 'p'){
+		saveFrame("Simulation-" + frameCount + ".png");
+	}
 }
 
 //Sends The Humans Array To The Art Sketch
