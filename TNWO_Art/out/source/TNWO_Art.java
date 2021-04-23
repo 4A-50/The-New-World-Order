@@ -260,25 +260,46 @@ public void draw(){
 
 //Runs If Any Keyboard Input Is Detected
 public void keyPressed() {
+	//Changes The Art Type
 	if (key == '1') {
 		runType = RunTypes.Forever;
 	}
-
 	if (key == '2') {
 		runType = RunTypes.Fadeout;
 	}
-
 	if (key == '3') {
 		runType = RunTypes.Shrink;
 	}
-
 	if (key == '4') {
 		runType = RunTypes.Fadein;
 	}
 
 	//Takes A Screen Shot Of The Sketch
 	if (key == 'p'){
-		saveFrame("TheNewWorldOrder-" + frameCount + ".png");
+		saveFrame("Art-" + frameCount + ".png");
+	}
+
+	//Checks If The Key Is Coded
+	if (key == CODED) {
+		//Increases The Line Multiplier
+		if (keyCode == UP) {
+			mutiplier++;
+		}
+		
+		//Decreaes The Line Multiplier
+		if (keyCode == DOWN) {
+			mutiplier--;
+		}
+
+		//Increases The Time Lines Are Around For
+		if (keyCode == RIGHT) {
+			shrinkVal++;
+		}
+
+		//Decreases The Time Lines Are Around For
+		if (keyCode == LEFT) {
+			shrinkVal--;
+		}
 	}
 }
 

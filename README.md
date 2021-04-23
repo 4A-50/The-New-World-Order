@@ -5,15 +5,17 @@ The New World Order Is A Ecosystem Simulation Made In Processing. The Data From 
 ## The Art Sketch
 <img src="https://cdn.discordapp.com/attachments/808992941326467122/833712248068374558/60Mins_Sim.PNG" alt="60 Mins Artwork" width="300"/>
 
-The Art Sketch Draws A New Line From The Last Position To A New One Based Of The Data It Recives Via The OSC Message From The Simulation. All The Lines Also Are Effected By The Line Modifier Which Allows Them To Be Longer Or Shorter.
+The Art Sketch Draws A New Line From The Last Position To A New One Based Of The Data It Recives Via The OSC Message From The Simulation. 
+
+The Modifers For The Art Sketch Are:
 
 ```java
 //----------Modifiers----------
 //Run Type
 RunTypes runType = RunTypes.Forever;
 
-//Mutiplier For The Lines
-int mutiplier = 10;
+//Multiplier For The Lines
+int multiplier = 10;
 
 //The Time Before Lines Dissapear
 int shrinkVal = 50;
@@ -26,7 +28,13 @@ The Other Modifers Are:
    - `3` For Shrink
    - `4` For Fade In
  
- - The `shirnkVal` Which Is How Long Lines Last Fore Before Either Fading Out Or Getting Removed
+ - The `multiplier` Which Effects How Long The Lines Are. This Can Be Changed During Runtime By Pressing:
+   - `↑` To Increase It
+   - `↓` To Decrease It
+
+ - The `shirnkVal` Which Is How Long Lines Last Fore Before Either Fading Out Or Getting Removed. This Can Be Changed During Runtime By Pressing:
+   - `→` To Increase It
+   - `←` To Decrease It
 
 Screenshots Of The Artwork Can Be Caputred By Pressing `P`, These Are Then Saved To The Sketches Location.
 

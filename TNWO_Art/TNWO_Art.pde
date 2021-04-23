@@ -2,8 +2,8 @@
 //Run Type
 RunTypes runType = RunTypes.Forever;
 
-//Mutiplier For The Lines
-int mutiplier = 10;
+//multiplier For The Lines
+int multiplier = 10;
 
 //The Time Before Lines Dissapear
 int shrinkVal = 50;
@@ -93,7 +93,7 @@ void draw(){
 		//Creates A Random Angle
 		int blueAngle = int(random(360));
 		//Works Out The Move Size
-		int blueRadius = maxThirst - advThirst + mutiplier;
+		int blueRadius = maxThirst - advThirst + multiplier;
 
 		//Creates A New Move Postion
 		PVector newBlue = new PVector(BoundsLimit(int(blueLine.x + (cos(radians(blueAngle)) * blueRadius)), 0), 
@@ -109,7 +109,7 @@ void draw(){
 		//Creates A Random Angle
 		int greenAngle = int(random(360));
 		//Works Out The Move Size
-		int greenRadius = maxSpeed - advSpeed + mutiplier;
+		int greenRadius = maxSpeed - advSpeed + multiplier;
 
 		//Creates A New Move Position
 		PVector newGreen = new PVector(BoundsLimit(int(greenLine.x + (cos(radians(greenAngle)) * greenRadius)), 0), 
@@ -125,7 +125,7 @@ void draw(){
 		//Creates A Random Angle
 		int purpleAngle = int(random(360));
 		//Works Out The Move Size
-		int purpleRadius = int(map(purpleHumans, 0, purpleHumans + redHumans, 0, blueRadius)) + mutiplier;
+		int purpleRadius = int(map(purpleHumans, 0, purpleHumans + redHumans, 0, blueRadius)) + multiplier;
 
 		//Creates A New Move Position
 		PVector newPurple = new PVector(BoundsLimit(int(purpleLine.x + (cos(radians(purpleAngle)) * purpleRadius)), 0), 
@@ -141,7 +141,7 @@ void draw(){
 		//Creates A Random Angle
 		int redAngle = int(random(360));
 		//Works Out The Move Size
-		int redRadius = int(map(redHumans, 0, purpleHumans + redHumans, 0, greenRadius)) + mutiplier;
+		int redRadius = int(map(redHumans, 0, purpleHumans + redHumans, 0, greenRadius)) + multiplier;
 
 		//Creates A New Move Position
 		PVector newRed = new PVector(BoundsLimit(int(redLine.x + (cos(radians(redAngle)) * redRadius)), 0), 
@@ -241,18 +241,16 @@ void draw(){
 
 //Runs If Any Keyboard Input Is Detected
 void keyPressed() {
+	//Changes The Art Type
 	if (key == '1') {
 		runType = RunTypes.Forever;
 	}
-
 	if (key == '2') {
 		runType = RunTypes.Fadeout;
 	}
-
 	if (key == '3') {
 		runType = RunTypes.Shrink;
 	}
-
 	if (key == '4') {
 		runType = RunTypes.Fadein;
 	}
@@ -260,6 +258,29 @@ void keyPressed() {
 	//Takes A Screen Shot Of The Sketch
 	if (key == 'p'){
 		saveFrame("Art-" + frameCount + ".png");
+	}
+
+	//Checks If The Key Is Coded
+	if (key == CODED) {
+		//Increases The Line Multiplier
+		if (keyCode == UP) {
+			multiplier++;
+		}
+		
+		//Decreaes The Line Multiplier
+		if (keyCode == DOWN) {
+			multiplier--;
+		}
+
+		//Increases The Time Lines Are Around For
+		if (keyCode == RIGHT) {
+			shrinkVal++;
+		}
+
+		//Decreases The Time Lines Are Around For
+		if (keyCode == LEFT) {
+			shrinkVal--;
+		}
 	}
 }
 
